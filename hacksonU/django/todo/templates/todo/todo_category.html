@@ -1,0 +1,81 @@
+<head>
+    <meta charset="utf-8">
+    <title>Rits小町のtodoリスト</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="theme-color" content="#fafafa">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <link rel="stylesheet" href="{% static 'button.css' %}">
+    <link rel="stylesheet" href="{% static 'menu-bar.css' %}">
+    <link rel="stylesheet" href="{% static 'underline.css' %}">
+    <link rel="stylesheet" href="{% static 'addbutton.css' %}">
+    <link rel="stylesheet" href="{% static 'list.css' %}">
+</head>
+
+<body>
+    <td><button id="toggle-button">メニューを表示</button></td>
+    <nav id="menu-bar">
+        <nav id="option-button">
+            <a href="{% url 'todo_home' %}"><img src="{% static 'option.png' %}" alt="option"></a>
+        </nav>
+        <ul>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'list' %}">ホーム</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'todo_home' %}">今日のTodo</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    {% now "Y" as current_year %}
+                    {% now "m" as current_month %}
+                    <a href="{% url 'calender' year=current_year month=current_month %}">カレンダー</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'category' %}">カテゴリー管理</a>
+                </span>
+            </li>
+        </ul>
+    </nav>
+
+    <h1 id="tit">カテゴリー管理</h1>
+
+    <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
+    <script>
+        // ボタン要素とメニューバー要素を取得
+        const toggleButton = document.getElementById('toggle-button');
+        const menuBar = document.getElementById('menu-bar');
+
+        // ボタンをクリックしたときの動作を設定
+        toggleButton.addEventListener("click", () => {
+            // メニューバーの表示状態を切り替える
+            if (menuBar.style.display === 'none' || menuBar.style.display === '') {
+                menuBar.style.display = 'block'; // メニューバーを表示
+                toggleButton.textContent = '×'; // ボタンのテキストを変更
+            } else {
+                menuBar.style.display = 'none'; // メニューバーを非表示
+                toggleButton.textContent = '≡'; // ボタンのテキストを変更
+            }
+        });
+
+    </script>
+</body>

@@ -1,0 +1,41 @@
+<head>
+    <meta charset="utf-8">
+    <title>Rits小町のtodoリスト</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1>Tasks</h1>
+<h1>タスクの削除</h1>
+<form action="" method="POST">{% csrf_token %}
+    <p>{{task.title}}</p>
+    <input type="submit" value="delete">
+    <div class="container">
+
+        <div>
+        <a href="{% url 'todo_home' %}"><button type="button" class="ms-1 btn btn-primary"> ToDoリスト</button></a>
+        </div>
+    </div>
+</form>
+</body>

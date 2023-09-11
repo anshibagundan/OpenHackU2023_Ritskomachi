@@ -1,0 +1,54 @@
+/* メニューバーのスタイル */
+@font-face {
+    font-family: 'MyFont';
+    src: url(Mameron.otf);
+}
+
+body {
+    font-family: MyFont;
+}
+
+#menu-bar {
+    display: none;
+    /* 初期状態では非表示 */
+    background-color: #fff;
+    /* メニューバーの背景色 */
+    color: #000;
+    /* メニューバーのテキスト色 */
+    padding: 10px;
+    /* メニューバーの内側の余白 */
+    width: 40%;
+    height: 90%;
+    /* メニューバーの高さを設定 */
+}
+
+#menu-bar ul {
+    list-style: none;
+    /* リストスタイルを無効にする */
+    padding: 0;
+}
+
+#menu-bar ul li {
+    margin: 30px 30px;
+    /* メニュー項目の上下のマージン */
+}
+
+#menu-bar ul li a {
+    background:linear-gradient(transparent 60%, #ff6 60%);
+    color: #000;
+    /* リンクのテキスト色 */
+}
+
+/* ボタンのスタイル */
+#toggle-button {
+    padding: 10px 20px;
+    /* ボタンの余白 */
+    background-color: #ff6;
+    /* ボタンの背景色 */
+    color: #000;
+    /* ボタンのテキスト色 */
+    border: none;
+    /* ボーダーを無効にする */
+    cursor: pointer;
+    /* カーソルをポインターに変更 */
+}

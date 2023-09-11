@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メニューバーの表示/非表示</title>
+    <link rel="stylesheet" href="./style/base.css">
+    <link rel="stylesheet" href="./style/underline.css">
+    <link rel="stylesheet" href="./style/button.css">
+    <link rel="stylesheet" href="./style/menu-bar.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <button id="toggle-button">メニューを表示</button>
+    <nav id="menu-bar">
+        <nav id ="option-button">
+            <a href="option.html">
+                <img src="./image/option.png" alt="option">
+            </a>
+        </nav>
+        <ul>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="#">ホーム</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="#">todo一覧</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="#">カレンダー</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="#">カテゴリー管理</a>
+                </span>
+            </li>
+        </ul>
+    </nav>
+    <script src="script.js"></script>
+</body>
+
+</html>

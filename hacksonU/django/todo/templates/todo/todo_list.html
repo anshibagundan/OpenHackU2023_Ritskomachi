@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>Rits小町のtodoリスト</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="theme-color" content="#fafafa">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <link rel="stylesheet" href="{% static 'button.css' %}">
+    <link rel="stylesheet" href="{% static 'menu-bar.css' %}">
+    <link rel="stylesheet" href="{% static 'underline.css' %}">
+    <link rel="stylesheet" href="{% static 'addbutton.css' %}">
+    <link rel="stylesheet" href="{% static 'list.css' %}">
+</head>
+
+<body>
+    <td><button id="toggle-button">メニューを表示</button></td>
+    <nav id="menu-bar">
+        <nav id="option-button">
+            <a href="{% url 'todo_home' %}"><img src="{% static 'option.png' %}" alt="option"></a>
+        </nav>
+        <ul>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'list' %}">ホーム</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'todo_home' %}">今日のTodo</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    {% now "Y" as current_year %}
+                    {% now "m" as current_month %}
+                    <a href="{% url 'calender' year=current_year month=current_month %}">カレンダー</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'category' %}">カテゴリー管理</a>
+                </span>
+            </li>
+        </ul>
+    </nav>
+
+    <h1 id="tit">Todoリスト一覧</h1>
+    <h2>重さと日付考慮</h2>
+    <a href="{% url 'todo_importance' %}">重さのみ考慮</a>
+    <div>
+        <table>
+            <tr>
+                <th>内容</th>
+                <th>期限</th>
+                <th>重さ</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            {% for task in todos %}
+            <tr>
+                <td>{{ task.title }}</td>
+                <td>{{ task.deadline }}</td>
+                <td>{{ task.importance }}</td>
+                <td><a href="{% url 'detail' task.pk %}">詳細</a></td>
+                <td><a href="{% url 'update' task.pk %}">編集</a></td>
+                <td><a href="{% url 'delete' task.pk %}">削除</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
+    <script src="{% static 'script.js' %}"></script>
+</body>

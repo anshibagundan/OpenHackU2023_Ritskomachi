@@ -1,0 +1,112 @@
+<head>
+    <meta charset="utf-8">
+    <title>Rits小町のtodoリスト</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="theme-color" content="#fafafa">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <link rel="stylesheet" href="{% static 'button.css' %}">
+    <link rel="stylesheet" href="{% static 'menu-bar.css' %}">
+    <link rel="stylesheet" href="{% static 'underline.css' %}">
+    <link rel="stylesheet" href="{% static 'addbutton.css' %}">
+    <link rel="stylesheet" href="{% static 'list.css' %}">
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+</head>
+
+<body>
+    <td><button id="toggle-button">メニューを表示</button></td>
+    <nav id="menu-bar">
+        <nav id="option-button">
+            <a href="{% url 'todo_home' %}"><img src="{% static 'option.png' %}" alt="option"></a>
+        </nav>
+        <ul>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'list' %}">ホーム</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'todo_home' %}">今日のTodo</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    {% now "Y" as current_year %}
+                    {% now "m" as current_month %}
+                    <a href="{% url 'calender' year=current_year month=current_month %}">カレンダー</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'category' %}">カテゴリー管理</a>
+                </span>
+            </li>
+        </ul>
+    </nav>
+    <h1 id="tit">今日のToDo</h1>
+
+    <div>
+        <h1>Tasks</h1>
+        <ul>
+
+            <table>
+
+                {% for task in tasks %}
+                {% with task.deadline|date:"m" as task_month %}
+                {% if now == task.deadline %}
+                <div class="btn-container">
+                    <tr>
+                        <th>
+                            <button2 class="btn-trigger" data-trget="modal">{{task.title}}</button2>
+                        </th>
+                    </tr>
+                </div>
+
+                <div id="mask" class="hidden"></div>
+
+                <section id="modal" class="hidden">
+                    <p>
+                        {{task.title}}<br>
+                        <br>
+                        {{task.description}}<br>
+                        <br>
+                        {{task.deadline}}<br>
+                        <br>
+                        <a href="{% url 'update' task.pk %}">編集</a> <a href="{% url 'delete' task.pk %}">削除</a>
+                    </p>
+                </section>
+
+                <!-- <th>{{ task.title }}</th>
+                    <th>{{ task.deadline }}</th>
+                    <th><a href="{% url 'detail' task.pk %}">詳細</a></th>
+                    <th><a href="{% url 'update' task.pk %}">編集</a></th>
+                    <th><a href="{% url 'delete' task.pk %}">削除</a></th>  -->
+                {% endif %}
+                {% endwith %}
+                {% endfor %}
+                <tr>
+
+
+                </tr>
+            </table>
+        </ul>
+    </div>
+
+    <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
+
+    <script src="{% static 'script.js' %}"></script>
+    <script src="{% static 'home.js' %}"></script>
+</body>
