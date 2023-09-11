@@ -63,4 +63,4 @@ typing_extensions==4.7.1
 virtualenv==20.24.4
 wcwidth==0.2.6
 Werkzeug==2.3.7
-dj-database-url-2.1.0
+dj-database-url==2.1.0
