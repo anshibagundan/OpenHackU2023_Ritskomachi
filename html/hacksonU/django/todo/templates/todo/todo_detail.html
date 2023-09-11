@@ -1,0 +1,51 @@
+<head>
+    <meta charset="utf-8">
+    <title>Rits小町のtodoリスト</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Todo Detail</h1>
+    <div class="container">
+        <a href="{% url 'list' %}"><button type="button" class="ms-1 btn btn-primary"> ホーム</button></a>
+        <a href="{% url 'todo_home' %}"><button type="button" class="ms-1 btn btn-primary"> todoリスト</button></a>
+    </div>
+<table>
+    <thead>
+    <tr>
+        <th scope="col">内容</th>
+        <th scope="col">期限</th>
+        <th scope="col">重み</th>
+        <th scope="col">詳細</th>
+    </tr>
+    </thead>
+    <tbody>
+<tr>
+    <td><h2>{{task.title}}</h2></td>
+    <td>{{task.deadline}}</td>
+    <td>{{task.importance}}</td>
+    <td>{{task.description}}</td>
+</tr>
+    </tbody>
+</table>
+</body>

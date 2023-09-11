@@ -1,0 +1,148 @@
+<head>
+    <meta charset="utf-8">
+    <title>Rits小町のTodoリスト-カレンダー</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+
+    <meta name="description" content="">
+
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="theme-color" content="#fafafa">
+    {% load static %}
+        <link rel="stylesheet" href="{% static 'base.css' %}">
+        <link rel="stylesheet" href="{% static 'button.css' %}">
+        <link rel="stylesheet" href="{% static 'menu-bar.css' %}">
+        <link rel="stylesheet" href="{% static 'underline.css' %}">
+        <link rel="stylesheet" href="{% static 'addbutton.css' %}">
+        <link rel="stylesheet" href="{% static 'list.css' %}">
+        <link rel="stylesheet" href="{% static 'calender.css' %}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <!-- ボタン要素とメニューバー要素を取得 -->
+    <td><button id="toggle-button">メニューを表示</button></td>
+    <nav id="menu-bar">
+        <nav id="option-button">
+            <a href="{% url 'todo_home' %}"><img src="{% static 'option.png' %}" alt="option"></a>
+        </nav>
+        <ul>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'list' %}">ホーム</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'todo_home' %}">今日のTodo</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    {% now "Y" as current_year %}
+                    {% now "m" as current_month %}
+                    <a href="{% url 'calender' year=current_year month=current_month %}">カレンダー</a>
+                </span>
+            </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'category' %}">カテゴリー管理</a>
+                </span>
+            </li>
+        </ul>
+    </nav>
+
+    <h1 id="tit">カレンダーだよ～</h1>
+
+    <div class="container" mt-3>
+        {% block content %}
+
+        <div id="calender_head">
+            <a href="{% url 'calender' month_previous.year month_previous.month %}">前月</a>
+            <span class="large-text">{{ month_current | date:"　　m月" }}</span>{{ month_current | date:"　Y年　　"}}
+            <a href="{% url 'calender' month_next.year month_next.month %}">次月</a>
+        </div>
+
+        <div id="content-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        {% for w in week_names %}
+                        <th>{{ w }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for week in month_days %}
+                    <tr>
+                        {% for day in week %}
+                        {% if now == day %}
+                        <td class="table-success" class="btn-trigger" data-trget="modal" id="task-button">
+                            {% else %}
+                        <td class="btn-trigger" data-trget="modal" id="task-button">
+                            {% endif %}
+
+                            {% if month_current.month != day.month %}
+                            {{ day | date:"m/d" }}
+                            {% else %}
+                            {{ day.day }}
+                            {% endif %}
+                        </td>
+
+                        <nav id="task-bar">
+                            {{day | date:"m月d日のタスク"}}<br>
+                            {% for task in tasks %}
+                            {% if day.day|stringformat:"02d" == task.deadline|date:"d" and day.month|stringformat:"02d" == task.deadline|date:"m" %}
+                                <span id="task-span">
+                                    <span id="task-span-box">
+                                        <button class="checkbox" data-checked="false"></button>
+                                    </span>
+                                    <span id="task-span-tit">
+                                        {{task.title}}
+                                    </span>
+                                    <span id="task-span-description">
+                                    {{task.description}}
+                                    </span>
+                                </span>
+                                    <a href="{% url 'update' task.pk %}">編集</a>
+                                    <a href="{% url 'delete' task.pk %}">削除</a>
+                                    <br>
+                                    <br>
+                            {% endif %}
+                            {% endfor %}
+                        </nav>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endblock %}
+    </div>
+
+    <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
+    <script src="{% static 'script.js' %}"></script>
+    <script src="{% static 'calender.js' %}"></script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+</body>

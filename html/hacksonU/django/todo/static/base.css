@@ -1,0 +1,30 @@
+/* メニューバーのスタイル */
+@font-face {
+    font-family: 'MyFont';
+    src: url(Mameron.otf);
+}
+
+body {
+    font-family: MyFont;
+    color: #000;
+    background-color: #e7eaaf;
+}
+
+.textWrapperUnit {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+a {
+    cursor: pointer;
+    /* カーソルをポインターに変更 */
+}
+
+a:link,
+a:visited {
+    color: inherit;
+    /* リンクの色を親要素から継承 */
+    text-decoration: none;
+    /* リンクの下線をなくす */
+}
