@@ -29,6 +29,27 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['.herokuapp.com', 'localhost', '127.0.0.1']
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'errors.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
+
+
+
 
 
 # Application definition
@@ -51,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -123,10 +145,16 @@ USE_TZ = True
 
 STATIC_URL = '/staticfiles/'
 # Herokuの静的ファイルのサービングにはWhitenoiseを使用する場合
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
-# 静的ファイルを集めるディレクトリ
+# 静的ファイルを集めるディレクト
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

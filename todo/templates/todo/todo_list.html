@@ -9,20 +9,138 @@
     <link rel="manifest" href="site.webmanifest">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#fafafa">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'base.css' %}">
-    <link rel="stylesheet" href="{% static 'button.css' %}">
-    <link rel="stylesheet" href="{% static 'menu-bar.css' %}">
-    <link rel="stylesheet" href="{% static 'underline.css' %}">
-    <link rel="stylesheet" href="{% static 'addbutton.css' %}">
-    <link rel="stylesheet" href="{% static 'list.css' %}">
+    <style>
+        /* メニューバーのスタイル */
+@font-face {
+    font-family: 'MyFont';
+    src: url(Mameron.otf);
+}
+
+body {
+    font-family: MyFont;
+    color: #00000;
+    background-color: #e7eaaf;
+}
+
+.textWrapperUnit {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+a {
+    cursor: pointer;
+    /* カーソルをポインターに変更 */
+}
+
+a:link,
+a:visited {
+    color: inherit;
+    /* リンクの色を親要素から継承 */
+    text-decoration: none;
+    /* リンクの下線をなくす */
+}
+#toggle-button {
+    padding: 10px 20px;
+    /* ボタンの余白 */
+    background-color:  #fff;
+    /* ボタンの背景色 */
+    color: #000;
+    border: none;
+    /* ボーダーを無効にする */
+    cursor: pointer;
+    /* カーソルをポインターに変更 */
+}
+#menu-bar {
+    display: none;
+    /* 初期状態では非表示 */
+    background-color: #fff;
+    /* メニューバーの背景色 */
+    color: #000;
+    /* メニューバーのテキスト色 */
+    padding: 10px;
+    /* メニューバーの内側の余白 */
+    width: 40%;
+    height: 100%;
+    /* メニューバーの高さを設定 */
+}
+
+#menu-bar ul {
+    list-style: flex;
+    /* リストスタイルを無効にする */
+    padding: 0;
+}
+
+#menu-bar ul li {
+    margin: 15% 15%;
+    /* メニュー項目の上下のマージン */
+    font-size: 250%;
+    display: flex;
+    justify-content: center;
+    /* 水平方向に中央揃え */
+    align-items: center;
+}
+
+#option-button img {
+    display: flex;
+    width: 7%;
+    /* 幅を30pxに設定 */
+    height: 7%;
+    /* 高さも30pxに設定 */
+    margin-left: auto;
+    /* メニューバーからの間隔を設定 */
+}
+.backgroundImage {
+    background-image: linear-gradient(transparent 70%, #ffff97 0%);
+    background-size: 0 70%;
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    transition: background-size 0.5s ease-out;
+}
+
+
+.textWrapper:hover .backgroundImage {
+    background-size: 100% 70%;
+    /* 幅(100%=文字の長さ) | 高さ(=線の太さ) */
+    background-position: bottom left;
+    /* 左下に配置 */
+}
+#add-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: blue;
+    color: white;
+    font-size: 30px;
+    border: none;
+    cursor: pointer;
+    position: fixed;
+    top: 90%;
+    right: 3%;
+    z-index: 2;
+  }
+
+  table {
+    border-collapse: collapse;
+    margin: 2em auto;
+    width: 80%;
+  }
+
+  th, td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+  }
+
+</style>
+
 </head>
 
 <body>
     <td><button id="toggle-button">メニューを表示</button></td>
     <nav id="menu-bar">
         <nav id="option-button">
-            <a href="{% url 'todo_home' %}"><img src="{% static 'option.png' %}" alt="option"></a>
+            <a href="{% url 'todo_home' %}"></a>
         </nav>
         <ul>
             <li class="textWrapper">
@@ -82,8 +200,23 @@
 
     </form>
     <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
-    <script src="{% static 'script.js' %}"></script>
     <script>
+        // ボタン要素とメニューバー要素を取得
+const toggleButton = document.getElementById('toggle-button');
+const menuBar = document.getElementById('menu-bar');
+
+// ボタンをクリックしたときの動作を設定
+toggleButton.addEventListener('click', () => {
+    // メニューバーの表示状態を切り替える
+    if (menuBar.style.display === 'none' || menuBar.style.display === '') {
+        menuBar.style.display = 'block'; // メニューバーを表示
+        toggleButton.textContent = 'メニューを非表示'; // ボタンのテキストを変更
+    } else {
+        menuBar.style.display = 'none'; // メニューバーを非表示
+        toggleButton.textContent = 'メニューを表示'; // ボタンのテキストを変更
+    }
+});
+
         document.addEventListener('DOMContentLoaded', function() {
             let checkboxes = document.querySelectorAll('input[type="checkbox"][name="task_ids"]');
             let deleteButton = document.getElementById('deleteSelectedButton');
@@ -107,5 +240,8 @@
                 });
             });
         });
+
+
+
     </script>
 </body>
