@@ -2,28 +2,47 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, UpdateView
 from .models import Todo, TodoDay
 from .forms import TodoForm
-from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect
-from django.urls import reverse
 from django.shortcuts import get_object_or_404
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.views import View
 from . import mixins
 from datetime import date
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic.edit import CreateView
+from django.contrib.auth import logout
 
 
-class TodoList(ListView):
-    model = Todo
-    context_object_name = "tasks"
+def title_page(request):
+    return render(request, 'todo/todo_title.html')
+
+class SignupView(CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')  # ログインページにリダイレクト
+    template_name = 'registration/usercreation_form.html'
 
 
-class TodoDetail(DetailView):
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('title')
+
+@login_required
+def todo_list(request):
+    todos = Todo.objects.filter(user=request.user)
+    return render(request, 'todo_list.html', {'todos': todos})
+
+class TodoDetail(LoginRequiredMixin, DetailView):
     model = Todo
     context_object_name = "task"
 
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user)
 
-class TaskListView(ListView, mixins.MonthCalendarMixin):
+
+
+class TaskListView(LoginRequiredMixin, ListView, mixins.MonthCalendarMixin):
     model = Todo
     template_name = 'todo/todo_home.html'
     context_object_name = "tasks"
@@ -35,7 +54,7 @@ class TaskListView(ListView, mixins.MonthCalendarMixin):
         return context
 
 
-class TodoUpdate(UpdateView):
+class TodoUpdate(LoginRequiredMixin, UpdateView):
     model = Todo
     fields = "__all__"
     success_url = '../..'
@@ -61,7 +80,7 @@ class TodoUpdate(UpdateView):
         return response
 
 
-class BulkDeleteTasks(View):
+class BulkDeleteTasks(LoginRequiredMixin, View):
     template_name = 'todo/todo_confirm_delete.html'
 
     def post(self, request):
@@ -78,7 +97,7 @@ class BulkDeleteTasks(View):
         return render(request, self.template_name, context)
 
 
-class TodoCalender(ListView, mixins.MonthCalendarMixin):
+class TodoCalender(LoginRequiredMixin, ListView, mixins.MonthCalendarMixin):
     model = Todo
     template_name = 'todo/todo_calender.html'
     context_object_name = "tasks"
@@ -89,34 +108,48 @@ class TodoCalender(ListView, mixins.MonthCalendarMixin):
         context.update(calendar_context)
         return context
 
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user)
 
-class TodoCategory(ListView):
+
+class TodoCategory(LoginRequiredMixin, ListView):
     model = Todo
     template_name = 'todo/todo_category.html'
     context_object_name = "tasks"
 
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user)
+
+
+@login_required
 def create_todo(request):
     if request.method == 'POST':
         form = TodoForm(request.POST)
         if form.is_valid():
-            todo = form.save()
+
+            todo = form.save(commit=False)
+            todo.user = request.user
+            todo.save()
 
             TodoDay.objects.create(
                 todo=todo,
+                user=request.user,
                 title=todo.title,
                 description=todo.description,
                 deadline=todo.deadline,
-                importance=todo.importance
-            )
-
+                importance=todo.importance,
+                tag=todo.tag
+)
             return redirect('list')
     else:
         form = TodoForm()
     return render(request, 'todo/todo_form.html', {'form': form})
 
+@login_required
 def todo_list(request):
     today = date.today()
-    todos = TodoDay.objects.all()
+    todos = TodoDay.objects.filter(user=request.user)
+
 
     def custom_sort(todo):
         days_difference = (todo.deadline - today).days
@@ -136,7 +169,7 @@ def todo_list(request):
     return render(request, 'todo/todo_list.html', context)
 
 
-
+@login_required
 def update_tododay(sender, instance, **kwargs):
     TodoDay.objects.update_or_create(
         todo=instance,
@@ -144,15 +177,17 @@ def update_tododay(sender, instance, **kwargs):
             'title': instance.title,
             'description': instance.description,
             'deadline': instance.deadline,
-            'importance': instance.importance
-        }
+            'importance': instance.importance,
+            'tag': instance.tag,
+}
     )
-
 def transform_importance(importance):
     return 6 - importance
 
+@login_required
 def todo_importance(request):
-    todos_sorted_by_importance = Todo.objects.all().order_by('importance')
+    todos_sorted_by_importance = Todo.objects.filter(user=request.user).order_by('importance')
+
     context = {
         'todos': todos_sorted_by_importance
     }

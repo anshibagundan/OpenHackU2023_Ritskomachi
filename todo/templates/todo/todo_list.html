@@ -55,6 +55,7 @@
 
     <br>
     <h1 id="tit">Todoリスト一覧</h1>
+    <a href="{% url 'logout' %}">ログアウト</a>
     <h2>重さと日付考慮</h2>
     <a href="{% url 'todo_importance' %}">重さのみ考慮</a>
     <form method="post" action="{% url 'delete' %}">
@@ -62,20 +63,19 @@
         <div>
             <table>
                 <tr>
-                    <th></th> <!-- 追加した列のヘッダー -->
+                    <!-- 追加した列のヘッダー -->
                     <th>内容</th>
                     <th>期限</th>
                     <th>重さ</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <th>タグ</th>
                 </tr>
                 {% for task in todos %}
                 <tr>
-                    <td><input type="checkbox" name="task_ids" value="{{task.id}}"></td> <!-- 追加した列の内容 -->
+                    <td><input type="checkbox" name="task_ids" value="{{task.id}}"></td>
                     <td>{{ task.title }}</td>
                     <td>{{ task.deadline }}</td>
                     <td>{{ task.importance }}</td>
+                    <td>{{ task.tag }}</td>
                     <td><a href="{% url 'detail' task.pk %}">詳細</a></td>
                     <td><a href="{% url 'update' task.pk %}">編集</a></td>
                 </tr>
