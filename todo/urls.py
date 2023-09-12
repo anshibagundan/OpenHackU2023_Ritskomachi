@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import TodoDetail,TaskListView, TodoUpdate, BulkDeleteTasks, TodoCalender, TodoCategory, todo_importance
 from . import views
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 
 urlpatterns = [
     path("", views.todo_list, name='list'),
@@ -13,3 +15,4 @@ urlpatterns = [
     path('create/', views.create_todo, name='create_todo'),
     path('importance/', todo_importance, name='todo_importance'),
 ]
+urlpatterns += staticfiles_urlpatterns()
