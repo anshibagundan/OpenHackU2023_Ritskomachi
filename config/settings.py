@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -99,11 +99,18 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+
+
+env = environ.Env()
+environ.Env.read_env()  # .env ファイルを読み込む
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
-    )
+    'default': env.db()  # DATABASE_URL 環境変数を使用してデータベースの設定を自動的に取得する
 }
+
+DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
+
 
 
 
