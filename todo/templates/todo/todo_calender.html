@@ -14,147 +14,147 @@
     <link rel="manifest" href="site.webmanifest">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#fafafa">
+    <style>
+        @font-face {
+            font-family: 'MyFont';
+            src: url(Mameron.otf);
+        }
+
+        body {
+            font-family: MyFont;
+            color: #00000;
+            background-color: #e7eaaf;
+        }
+
+        .textWrapperUnit {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        a {
+            cursor: pointer;
+            /* カーソルをポインターに変更 */
+            position: fixed;
+            top: 3;
+            left: 3;
+            z-index: 2;
+        }
+
+        a:link,
+        a:visited {
+            color: inherit;
+            /* リンクの色を親要素から継承 */
+            text-decoration: none;
+            /* リンクの下線をなくす */
+        }
+        #toggle-button {
+            padding: 10px 20px;
+            /* ボタンの余白 */
+            background-color:  #fff;
+            /* ボタンの背景色 */
+            color: #000;
+            border: none;
+            /* ボーダーを無効にする */
+            cursor: pointer;
+            /* カーソルをポインターに変更 */
+        }
+        #menu-bar {
+            display: none;
+            /* 初期状態では非表示 */
+            background-color: #fff;
+            /* メニューバーの背景色 */
+            color: #000;
+            /* メニューバーのテキスト色 */
+            padding: 10px;
+            /* メニューバーの内側の余白 */
+            width: 40%;
+            height: 100%;
+            /* メニューバーの高さを設定 */
+            position: fixed;
+            /*メニューバーを固定位置に配置 */
+            top: 0;
+            left: 0;
+            /* 左端に配置 */
+            z-index: 1;
+            /* メニューバーが他の要素の上に表示されるようにするためのz-index */
+            /* スクロールバーを表示するための設定 */
+            overflow-y: auto;
+            /* 縦方向のスクロールバーを表示 */
+        }
+
+        #menu-bar ul {
+            list-style: flex;
+            /* リストスタイルを無効にする */
+            padding: 0;
+        }
+
+        #menu-bar ul li {
+            margin: 15% 15%;
+            /* メニュー項目の上下のマージン */
+            font-size: 250%;
+            display: flex;
+            justify-content: center;
+            /* 水平方向に中央揃え */
+            align-items: center;
+        }
+
+        #option-button img {
+            display: flex;
+            width: 7%;
+            /* 幅を30pxに設定 */
+            height: 7%;
+            /* 高さも30pxに設定 */
+            margin-left: auto;
+            /* メニューバーからの間隔を設定 */
+        }
+        .backgroundImage {
+            background-image: linear-gradient(transparent 70%, #ffff97 0%);
+            background-size: 0 70%;
+            background-position: bottom right;
+            background-repeat: no-repeat;
+            transition: background-size 0.5s ease-out;
+        }
+
+
+        .textWrapper:hover .backgroundImage {
+            background-size: 100% 70%;
+            /* 幅(100%=文字の長さ) | 高さ(=線の太さ) */
+            background-position: bottom left;
+            /* 左下に配置 */
+        }
+        #add-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: blue;
+            color: white;
+            font-size: 30px;
+            border: none;
+            cursor: pointer;
+            position: fixed;
+            top: 90%;
+            right: 3%;
+            z-index: 2;
+          }
+
+          table {
+            border-collapse: collapse;
+            margin: 2em auto;
+            width: 80%;
+          }
+
+          th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+          }
+        </style>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
-        <style>
-            @font-face {
-                font-family: 'MyFont';
-                src: url(Mameron.otf);
-            }
-
-            body {
-                font-family: MyFont;
-                color: #00000;
-                background-color: #e7eaaf;
-            }
-
-            .textWrapperUnit {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-            }
-
-            a {
-                cursor: pointer;
-                /* カーソルをポインターに変更 */
-                position: fixed;
-                top: 3;
-                left: 3;
-                z-index: 2;
-            }
-
-            a:link,
-            a:visited {
-                color: inherit;
-                /* リンクの色を親要素から継承 */
-                text-decoration: none;
-                /* リンクの下線をなくす */
-            }
-            #toggle-button {
-                padding: 10px 20px;
-                /* ボタンの余白 */
-                background-color:  #fff;
-                /* ボタンの背景色 */
-                color: #000;
-                border: none;
-                /* ボーダーを無効にする */
-                cursor: pointer;
-                /* カーソルをポインターに変更 */
-            }
-            #menu-bar {
-                display: none;
-                /* 初期状態では非表示 */
-                background-color: #fff;
-                /* メニューバーの背景色 */
-                color: #000;
-                /* メニューバーのテキスト色 */
-                padding: 10px;
-                /* メニューバーの内側の余白 */
-                width: 40%;
-                height: 100%;
-                /* メニューバーの高さを設定 */
-                position: fixed;
-                /*メニューバーを固定位置に配置 */
-                top: 0;
-                left: 0;
-                /* 左端に配置 */
-                z-index: 1;
-                /* メニューバーが他の要素の上に表示されるようにするためのz-index */
-                /* スクロールバーを表示するための設定 */
-                overflow-y: auto;
-                /* 縦方向のスクロールバーを表示 */
-            }
-
-            #menu-bar ul {
-                list-style: flex;
-                /* リストスタイルを無効にする */
-                padding: 0;
-            }
-
-            #menu-bar ul li {
-                margin: 15% 15%;
-                /* メニュー項目の上下のマージン */
-                font-size: 250%;
-                display: flex;
-                justify-content: center;
-                /* 水平方向に中央揃え */
-                align-items: center;
-            }
-
-            #option-button img {
-                display: flex;
-                width: 7%;
-                /* 幅を30pxに設定 */
-                height: 7%;
-                /* 高さも30pxに設定 */
-                margin-left: auto;
-                /* メニューバーからの間隔を設定 */
-            }
-            .backgroundImage {
-                background-image: linear-gradient(transparent 70%, #ffff97 0%);
-                background-size: 0 70%;
-                background-position: bottom right;
-                background-repeat: no-repeat;
-                transition: background-size 0.5s ease-out;
-            }
-
-
-            .textWrapper:hover .backgroundImage {
-                background-size: 100% 70%;
-                /* 幅(100%=文字の長さ) | 高さ(=線の太さ) */
-                background-position: bottom left;
-                /* 左下に配置 */
-            }
-            #add-button {
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                background-color: blue;
-                color: white;
-                font-size: 30px;
-                border: none;
-                cursor: pointer;
-                position: fixed;
-                top: 90%;
-                right: 3%;
-                z-index: 2;
-              }
-
-              table {
-                border-collapse: collapse;
-                margin: 2em auto;
-                width: 80%;
-              }
-
-              th, td {
-                border: 1px solid black;
-                padding: 5px;
-                text-align: center;
-              }
-            </style>
 </head>
 
 <body>
@@ -194,57 +194,73 @@
 
     <div class="container" mt-3>
         {% block content %}
-        <a href="{% url 'calender' month_previous.year month_previous.month %}">前月</a>
-        {{ month_current | date:"Y年m月" }}
-        <a href="{% url 'calender' month_next.year month_next.month %}">次月</a>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    {% for w in week_names %}
-                    <th>{{ w }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for week in month_days %}
-                <tr>
-                    {% for day in week %}
+        <div id="calender_head">
+            <a href="{% url 'calender' month_previous.year month_previous.month %}">前月</a>
+            <span class="large-text">{{ month_current | date:"　　m月" }}</span>{{ month_current | date:"　Y年　　"}}
+            <a href="{% url 'calender' month_next.year month_next.month %}">次月</a>
+        </div>
 
-                    {% if now == day %}
-                    <td class="table-success">
-                        {% else %}
-                    <td>
-                        {% endif %}
-
-                        {% if month_current.month != day.month %}
-                        {{ day | date:"m/d" }}
-                        {% else %}
-                        {{ day.day }}
-
-                        {% for task in tasks %}
-                        {% with task.deadline|date:"d" as task_date %}
-                        {% if day.day|stringformat:"02d" == task.deadline|date:"d" and day.month|stringformat:"02d" == task.deadline|date:"m" %}
-                            <br><a href="{% url 'detail' task.pk %}">{{ task.title }}</a>
-                        {% endif %}
-                        {% endwith %}
+        <div id="content-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        {% for w in week_names %}
+                        <th>{{ w }}</th>
                         {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for week in month_days %}
+                    <tr>
+                        {% for day in week %}
+                        {% if now == day %}
+                        <td class="table-success" class="btn-trigger" data-trget="modal" id="task-button">
+                            {% else %}
+                        <td class="btn-trigger" data-trget="modal" id="task-button">
+                            {% endif %}
 
-                        {% endif %}
+                            {% if month_current.month != day.month %}
+                            {{ day | date:"m/d" }}
+                            {% else %}
+                            {{ day.day }}
+                            {% endif %}
+                        </td>
 
-                    </td>
+                        <nav id="task-bar">
+                            {{day | date:"m月d日のタスク"}}<br>
+                            {% for task in tasks %}
+                            {% if day.day|stringformat:"02d" == task.deadline|date:"d" and day.month|stringformat:"02d" == task.deadline|date:"m" %}
+                                <span id="task-span">
+                                    <span id="task-span-box">
+                                        <button class="checkbox" data-checked="false"></button>
+                                    </span>
+                                    <span id="task-span-tit">
+                                        {{task.title}}
+                                    </span>
+                                    <span id="task-span-description">
+                                    {{task.description}}
+                                    </span>
+                                </span>
+                                    <a href="{% url 'update' task.pk %}">編集</a>
+
+                                    <br>
+                                    <br>
+                            {% endif %}
+                            {% endfor %}
+                        </nav>
+                        {% endfor %}
+                    </tr>
                     {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
         {% endblock %}
     </div>
 
-    <p><a href="{% url 'create_todo' %}"><button id="add-button">＋</button></a></p>
-
+    <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
     <script>
-        // ボタン要素とメニューバー要素を取得
+    // ボタン要素とメニューバー要素を取得
 const toggleButton = document.getElementById('toggle-button');
 const menuBar = document.getElementById('menu-bar');
 
@@ -259,7 +275,8 @@ toggleButton.addEventListener('click', () => {
         toggleButton.textContent = 'メニューを表示'; // ボタンのテキストを変更
     }
 });
-// JavaScriptでボタン要素とモーダル要素を取得
+
+    // JavaScriptでボタン要素とモーダル要素を取得
 const btnTriggers = document.querySelectorAll('.btn-trigger');
 const masks = document.querySelectorAll('[id^="mask"]');
 const modals = document.querySelectorAll('[id^="modal"]');
@@ -311,7 +328,6 @@ checkboxes.forEach((checkbox) => {
     });
 });
 </script>
-
 
 
     <!-- Optional JavaScript -->
