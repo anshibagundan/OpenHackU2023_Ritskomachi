@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, UpdateView
 from .models import Todo, TodoDay
-from .forms import TodoForm
+from .forms import TodoForm, TagForm
 from django.shortcuts import get_object_or_404
 from django.views import View
 from . import mixins
@@ -19,7 +19,7 @@ def title_page(request):
 
 class SignupView(CreateView):
     form_class = UserCreationForm
-    success_url = reverse_lazy('login')  # ログインページにリダイレクト
+    success_url = reverse_lazy('login')
     template_name = 'registration/usercreation_form.html'
 
 
@@ -31,7 +31,11 @@ def logout_view(request):
 @login_required
 def todo_list(request):
     todos = Todo.objects.filter(user=request.user)
-    return render(request, 'todo_list.html', {'todos': todos})
+
+    context = {
+        'todos': todos
+    }
+    return render(request, 'todo_list.html', context)
 
 class TodoDetail(LoginRequiredMixin, DetailView):
     model = Todo
@@ -39,8 +43,6 @@ class TodoDetail(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return Todo.objects.filter(user=self.request.user)
-
-
 
 class TaskListView(LoginRequiredMixin, ListView, mixins.MonthCalendarMixin):
     model = Todo
@@ -53,6 +55,10 @@ class TaskListView(LoginRequiredMixin, ListView, mixins.MonthCalendarMixin):
         context.update(calendar_context)
         return context
 
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user)
+
+
 
 class TodoUpdate(LoginRequiredMixin, UpdateView):
     model = Todo
@@ -60,24 +66,21 @@ class TodoUpdate(LoginRequiredMixin, UpdateView):
     success_url = '../..'
 
     def form_valid(self, form):
-        print("form_valid method called")
-
         response = super().form_valid(form)
 
-
+        # Todo オブジェクトから TodoDay エントリを取得
         todo_day = get_object_or_404(TodoDay, todo=self.object)
-        print(f"Found TodoDay entry: {todo_day.id}")
 
-
-        todo_day.title = self.object.title
-        todo_day.description = self.object.description
-        todo_day.deadline = self.object.deadline
+        # importance フィールドを正しく設定
         todo_day.importance = self.object.importance
-        print(f"Updating TodoDay entry: {todo_day.id} with importance: {todo_day.importance}")
 
+        # 他のフィールドも必要に応じて更新
+
+        # TodoDay エントリを保存
         todo_day.save()
 
         return response
+
 
 
 class BulkDeleteTasks(LoginRequiredMixin, View):
@@ -125,8 +128,8 @@ class TodoCategory(LoginRequiredMixin, ListView):
 def create_todo(request):
     if request.method == 'POST':
         form = TodoForm(request.POST)
-        if form.is_valid():
 
+        if form.is_valid():
             todo = form.save(commit=False)
             todo.user = request.user
             todo.save()
@@ -138,11 +141,12 @@ def create_todo(request):
                 description=todo.description,
                 deadline=todo.deadline,
                 importance=todo.importance,
-                tag=todo.tag
-)
+                tag=todo.tag if todo.tag else None
+            )
             return redirect('list')
     else:
         form = TodoForm()
+
     return render(request, 'todo/todo_form.html', {'form': form})
 
 @login_required
@@ -192,3 +196,16 @@ def todo_importance(request):
         'todos': todos_sorted_by_importance
     }
     return render(request, 'todo/todo_importance.html', context)
+
+@login_required
+def create_tag(request):
+    if request.method == 'POST':
+        form = TagForm(request.POST)
+        if form.is_valid():
+            tag = form.save(commit=False)
+            tag.user = request.user
+            tag.save()
+            return redirect('list')
+    else:
+        form = TagForm()
+    return render(request, 'todo_list.html', {'form': form})

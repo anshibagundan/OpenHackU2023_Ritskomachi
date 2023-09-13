@@ -3,47 +3,42 @@
     <title>Rits小町のTodoリスト-カレンダー</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+
     <meta name="description" content="">
+
     <meta property="og:title" content="">
     <meta property="og:type" content="">
     <meta property="og:url" content="">
     <meta property="og:image" content="">
+
     <link rel="manifest" href="site.webmanifest">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#fafafa">
-
     <style>
         @font-face {
             font-family: 'MyFont';
             src: url(Mameron.otf);
         }
 
-        #body {
+        body {
             font-family: MyFont;
-            color: #000;
+            color: #00000;
             background-color: #e7eaaf;
-        }
-
-        .backgroundImage {
-            background-image: linear-gradient(transparent 70%, #ffff97 0%);
-            background-size: 0 70%;
-            background-position: bottom right;
-            background-repeat: no-repeat;
-            transition: background-size 0.5s ease-out;
-        }
-
-
-        .textWrapper:hover .backgroundImage {
-            background-size: 100% 70%;
-            /* 幅(100%=文字の長さ) | 高さ(=線の太さ) */
-            background-position: bottom left;
-            /* 左下に配置 */
         }
 
         .textWrapperUnit {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+        }
+
+        a {
+            cursor: pointer;
+            /* カーソルをポインターに変更 */
+            position: fixed;
+            top: 3;
+            left: 3;
+            z-index: 2;
         }
 
         a:link,
@@ -53,41 +48,17 @@
             text-decoration: none;
             /* リンクの下線をなくす */
         }
-
-        #tit {
-            margin-top: 1%;
-            /* 縦に5% */
-            margin-left: 30%;
-            /* 横に50% (中央) */
-            transform: translateX(-50%);
-            /* 横方向に中央揃え */
-            display: flex;
-            justify-content: center;
-            /* 水平方向に中央揃え */
-            align-items: center;
-            /* 垂直方向に中央揃え */
-            font-size: 3vw;
-        }
-    </style>
-    <style>
         #toggle-button {
             padding: 10px 20px;
             /* ボタンの余白 */
-            background-color: #fff;
+            background-color:  #fff;
             /* ボタンの背景色 */
             color: #000;
             border: none;
             /* ボーダーを無効にする */
             cursor: pointer;
             /* カーソルをポインターに変更 */
-            position: absolute;
-            /*メニューバーを固定位置に配置 */
-            top: 3;
-            left: 3;
-            /* 左端に配置 */
-            z-index: 2;
         }
-
         #menu-bar {
             display: none;
             /* 初期状態では非表示 */
@@ -137,8 +108,21 @@
             margin-left: auto;
             /* メニューバーからの間隔を設定 */
         }
-    </style>
-    <style>
+        .backgroundImage {
+            background-image: linear-gradient(transparent 70%, #ffff97 0%);
+            background-size: 0 70%;
+            background-position: bottom right;
+            background-repeat: no-repeat;
+            transition: background-size 0.5s ease-out;
+        }
+
+
+        .textWrapper:hover .backgroundImage {
+            background-size: 100% 70%;
+            /* 幅(100%=文字の長さ) | 高さ(=線の太さ) */
+            background-position: bottom left;
+            /* 左下に配置 */
+        }
         #add-button {
             width: 50px;
             height: 50px;
@@ -152,119 +136,20 @@
             top: 90%;
             right: 3%;
             z-index: 2;
-        }
+          }
 
-        table {
+          table {
             border-collapse: collapse;
             margin: 2em auto;
             width: 80%;
-        }
+          }
 
-        tr,
-        th,
-        td {
+          th, td {
             border: 1px solid black;
             padding: 5px;
             text-align: center;
-        }
-
-        #content-wrapper {
-            background-color:darkgrey;
-            margin-right: 0%; /* バーの幅と同じ幅を設定 */
-        }
-    </style>
-
-    <style>
-        #task-bar {
-            display: none;
-            /* 初期状態では非表示 */
-            background-color: #f8f9ce;
-            /* メニューバーの背景色 */
-            color: #333;
-            /* メニューバーのテキスト色 */
-            padding-top: 50px;
-            /* メニューバーの内側の余白 */
-            width: 30%;
-            height: 75%;
-            position: fixed;
-            /*メニューバーを固定位置に配置 */
-            bottom: 0;
-            right: 0;
-            /* 左端に配置 */
-            z-index: 0;
-            /* メニューバーが他の要素の上に表示されるようにするためのz-index */
-            /* スクロールバーを表示するための設定 */
-            overflow-y: auto; /* 縦方向のスクロールバーを表示 */
-        }
-
-        #task-span{
-            background-color: rgb(130, 228, 237);
-            display:flex;
-            border: 1px solid black;
-            width: 100%;
-            height: 50px;
-        }
-
-        #task-span-box{
-            display:flex;
-            padding: auto;
-            border: 1px solid black;
-            justify-content: center; /* 水平方向に中央揃え */
-            align-items: center; /* 垂直方向に中央揃え */
-            height: 100%;
-            width: 15%;
-        }
-
-        #task-span-tit{
-            display:flex;
-            padding: auto;
-            border: 1px solid black;
-            justify-content: center; /* 水平方向に中央揃え */
-            align-items: center; /* 垂直方向に中央揃え */
-            height: 100%;
-            width: 35%;
-        }
-        #task-span-description{
-            display:flex;
-            padding: auto;
-            border: 1px solid black;
-            justify-content: center; /* 水平方向に中央揃え */
-            align-items: center; /* 垂直方向に中央揃え */
-            height: 100%;
-            width: 50%;
-        }
-
-        #calender_head{
-            font-size: 35px;
-            text-align: center; /* テキストを水平方向に中央に配置 */
-        }
-
-        #calender_head a, #calender_head span {
-            display: inline-block; /* テキストが左右中央に配置されるようにする */
-            text-align: center; /* テキストを水平方向に中央に配置 */
-        }
-
-        .large-text {
-            font-size: 50px; /* 大きさを調整するための適切なサイズに変更 */
-        }
-    </style>
-    <style>
-        .checkbox {
-            width: 25px; /* チェックボックスの幅を設定 */
-            height: 25px; /* チェックボックスの高さを設定 */
-            background-color: #fff; /* チェックボックスの背景色 */
-            border: 1px solid #ccc; /* チェックボックスの境界線 */
-            border-radius: 3px; /* チェックボックスの角を丸める */
-            cursor: pointer; /* カーソルをポインターに変更 */
-        }
-
-        /* チェックボックスがチェックされた状態を示すスタイル */
-        .checkbox.checked {
-            background-color: #007bff; /* チェックされた場合の背景色 */
-            border: 1px solid #007bff; /* チェックされた場合の境界線 */
-            color: #fff; /* チェックされた場合のテキスト色 */
-        }
-    </style>
+          }
+        </style>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
@@ -272,7 +157,7 @@
 
 </head>
 
-<body id="body">
+<body>
     <!-- ボタン要素とメニューバー要素を取得 -->
     <td><button id="toggle-button">メニューを表示</button></td>
     <nav id="menu-bar">
@@ -317,7 +202,6 @@
         </div>
 
         <div id="content-wrapper">
-            {% csrf_token %}
             <table class="table">
                 <thead>
                     <tr>
@@ -339,7 +223,7 @@
                             {% if month_current.month != day.month %}
                             {{ day | date:"m/d" }}
                             {% else %}
-                            {{ day | date:"　d　" }}
+                            {{ day.day }}
                             {% endif %}
                         </td>
 
@@ -347,21 +231,21 @@
                             {{day | date:"m月d日のタスク"}}<br>
                             {% for task in tasks %}
                             {% if day.day|stringformat:"02d" == task.deadline|date:"d" and day.month|stringformat:"02d" == task.deadline|date:"m" %}
-                            <span id="task-span">
-                                <span id="task-span-box">
-                                    <button class="checkbox" data-checked="false">✓</button>
-                                </span>
-                                <span id="task-span-tit">
-                                    {{task.title}}
-                                </span>
-                                <span id="task-span-description">
+                                <span id="task-span">
+                                    <span id="task-span-box">
+                                        <button class="checkbox" data-checked="false"></button>
+                                    </span>
+                                    <span id="task-span-tit">
+                                        {{task.title}}
+                                    </span>
+                                    <span id="task-span-description">
                                     {{task.description}}
+                                    </span>
                                 </span>
-                            </span>
-                            <a href="{% url 'update' task.pk %}">編集</a>
+                                    <a href="{% url 'update' task.pk %}">編集</a>
 
-                            <br>
-                            <br>
+                                    <br>
+                                    <br>
                             {% endif %}
                             {% endfor %}
                         </nav>
@@ -373,101 +257,77 @@
         </div>
         {% endblock %}
     </div>
-    <button type="submit" id="deleteSelectedButton" style="display: none;">選択したタスクを削除</button>
 
     <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
     <script>
-        // ボタン要素とメニューバー要素を取得
-        const toggleButton = document.getElementById('toggle-button');
-        const menuBar = document.getElementById('menu-bar');
+    // ボタン要素とメニューバー要素を取得
+const toggleButton = document.getElementById('toggle-button');
+const menuBar = document.getElementById('menu-bar');
 
-        // ボタンをクリックしたときの動作を設定
-        toggleButton.addEventListener('click', () => {
-            // メニューバーの表示状態を切り替える
-            if (menuBar.style.display === 'none' || menuBar.style.display === '') {
-                menuBar.style.display = 'block'; // メニューバーを表示
-                toggleButton.textContent = 'メニューを非表示'; // ボタンのテキストを変更
-            } else {
-                menuBar.style.display = 'none'; // メニューバーを非表示
-                toggleButton.textContent = 'メニューを表示'; // ボタンのテキストを変更
-            }
-        });
+// ボタンをクリックしたときの動作を設定
+toggleButton.addEventListener('click', () => {
+    // メニューバーの表示状態を切り替える
+    if (menuBar.style.display === 'none' || menuBar.style.display === '') {
+        menuBar.style.display = 'block'; // メニューバーを表示
+        toggleButton.textContent = 'メニューを非表示'; // ボタンのテキストを変更
+    } else {
+        menuBar.style.display = 'none'; // メニューバーを非表示
+        toggleButton.textContent = 'メニューを表示'; // ボタンのテキストを変更
+    }
+});
 
-        // JavaScriptでボタン要素とモーダル要素を取得
-        const btnTriggers = document.querySelectorAll('.btn-trigger');
-        const masks = document.querySelectorAll('[id^="mask"]');
-        const modals = document.querySelectorAll('[id^="modal"]');
+    // JavaScriptでボタン要素とモーダル要素を取得
+const btnTriggers = document.querySelectorAll('.btn-trigger');
+const masks = document.querySelectorAll('[id^="mask"]');
+const modals = document.querySelectorAll('[id^="modal"]');
 
-        // 各ボタンにクリックイベントを設定
-        btnTriggers.forEach((btn, index) => {
-            btn.addEventListener('click', () => {
-                masks[index].classList.remove('hidden');
-                modals[index].classList.remove('hidden');
-            });
-        });
+// 各ボタンにクリックイベントを設定
+btnTriggers.forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+        masks[index].classList.remove('hidden');
+        modals[index].classList.remove('hidden');
+    });
+});
 
-        // 各マスクをクリックしたときにモーダルを隠す
-        masks.forEach((mask, index) => {
-            mask.addEventListener('click', () => {
-                mask.classList.add('hidden');
-                modals[index].classList.add('hidden');
-            });
-        });
-        // ボタン要素とメニューバー要素を取得
-        const taskButtons = document.querySelectorAll('#task-button');
-        const taskBars = document.querySelectorAll('#task-bar');
-        const calenderSlide = document.querySelector('#content-wrapper');
+// 各マスクをクリックしたときにモーダルを隠す
+masks.forEach((mask, index) => {
+    mask.addEventListener('click', () => {
+        mask.classList.add('hidden');
+        modals[index].classList.add('hidden');
+    });
+});
+// ボタン要素とメニューバー要素を取得
+const taskButtons = document.querySelectorAll('#task-button');
+const taskBars = document.querySelectorAll('#task-bar');
+const calenderSlide = document.querySelector('#content-wrapper');
 
 
-        taskButtons.forEach((taskButton, index) => {
-            taskButton.addEventListener("click", () => {
-                // メニューバーの表示状態を切り替える
-                if (taskBars[index].style.display === 'none' || taskBars[index].style.display === '') {
-                    taskBars[index].style.display = 'block'; // メニューバーを表示
-                    calenderSlide.style.marginRight = '30%';
-                    taskButton.textContent = day.day; // ボタンのテキストを変更
-                } else {
-                    taskBars[index].style.display = 'none'; // メニューバーを非表示
-                    calenderSlide.style.marginRight = '0%';
-                    taskButton.textContent = day.day; // ボタンのテキストを変更
-                }
-            });
-        });
-        // チェックボックス要素の取得
-        const checkboxes = document.querySelectorAll('.checkbox');
+taskButtons.forEach((taskButton, index) => {
+    taskButton.addEventListener("click", () => {
+        // メニューバーの表示状態を切り替える
+        if (taskBars[index].style.display === 'none' || taskBars[index].style.display === '') {
+            taskBars[index].style.display = 'block'; // メニューバーを表示
+            calenderSlide.style.marginRight = '30%';
+            taskButton.textContent = day.day; // ボタンのテキストを変更
+        } else {
+            taskBars[index].style.display = 'none'; // メニューバーを非表示
+            calenderSlide.style.marginRight = '0%';
+            taskButton.textContent = day.day; // ボタンのテキストを変更
+        }
+    });
+});
+// チェックボックス要素の取得
+const checkboxes = document.querySelectorAll('.checkbox');
 
-        // 各チェックボックスにクリックイベントリスナーを追加
-        checkboxes.forEach((checkbox) => {
-            checkbox.addEventListener('click', () => {
-                checkbox.classList.toggle('checked');
-                const isChecked = checkbox.classList.contains('checked');
-                checkbox.setAttribute('data-checked', isChecked ? 'true' : 'false');
-            });
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            let checkboxes = document.querySelectorAll('input[type="checkbox"][name="task_ids"]');
-            let deleteButton = document.getElementById('deleteSelectedButton');
-
-            checkboxes.forEach(function(checkbox) {
-                checkbox.addEventListener('change', function() {
-                    // チェックされているチェックボックスの数を数える
-                    let checkedCount = 0;
-                    checkboxes.forEach(function(c) {
-                        if (c.checked) {
-                            checkedCount++;
-                        }
-                    });
-
-                    // チェックが一つ以上あればボタンを表示、なければ非表示
-                    if (checkedCount > 0) {
-                        deleteButton.style.display = 'block';
-                    } else {
-                        deleteButton.style.display = 'none';
-                    }
-                });
-            });
-        });
-    </script>
+// 各チェックボックスにクリックイベントリスナーを追加
+checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener('click', () => {
+        checkbox.classList.toggle('checked');
+        const isChecked = checkbox.classList.contains('checked');
+        checkbox.setAttribute('data-checked', isChecked ? 'true' : 'false');
+    });
+});
+</script>
 
 
     <!-- Optional JavaScript -->

@@ -23,6 +23,13 @@
     <link rel="stylesheet" href="{% static 'addbutton.css' %}">
     <link rel="stylesheet" href="{% static 'list.css' %}">
     <link rel="stylesheet" href="{% static 'home.css' %}">
+    <style>
+        .tag1 { background-color: orange; }
+        .tag2 { background-color: lightblue; }
+        .tag3 { background-color: yellow; }
+        .tag4 { background-color: pink; }
+        .tag5 { background-color: yellowgreen; }
+    </style>
 </head>
 
 <body>
@@ -54,6 +61,11 @@
                     <a href="{% url 'category' %}">カテゴリー管理</a>
                 </span>
             </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'logout' %}">ログアウト</a>
+                </span>
+            </li>
         </ul>
     </nav>
 
@@ -72,7 +84,7 @@
                     {% with task.deadline|date:"m" as task_month %}
                     {% if now == task.deadline %}
                     <div class="btn-container">
-                        <tr>
+                        <tr class="tag{{ task.tag }}">
                             <td><input type="checkbox" name="task_ids" value="{{ task.id }}" /></td>
                             <th>
                                 <button2 class="btn-trigger" data-trget="modal">{{task.title}}</button2>
@@ -82,7 +94,7 @@
                     <div id="mask" class="hidden"></div>
 
                     <section id="modal" class="hidden">
-                        <p>
+                        <tr class="tag{{ task.tag }}">
                             {{task.title}}<br>
                             <br>
                             {{task.description}}<br>
@@ -91,7 +103,7 @@
                             <br>
                             {{task.tag}}
                             <a href="{% url 'update' task.pk %}">編集</a>
-                        </p>
+                        </tr>
                     </section>
                     {% endif %}
                     {% endwith %}

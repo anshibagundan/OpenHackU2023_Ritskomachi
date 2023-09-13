@@ -1,3 +1,5 @@
+
+
 <head>
     <meta charset="utf-8">
     <title>Rits小町のtodoリスト</title>
@@ -26,6 +28,7 @@
 </head>
 
 <body>
+
     <td><button id="toggle-button">メニューを表示</button></td>
     <nav id="menu-bar">
         <nav id="option-button">
@@ -54,12 +57,37 @@
                     <a href="{% url 'category' %}">カテゴリー管理</a>
                 </span>
             </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'logout' %}">ログアウト</a>
+                </span>
+            </li>
         </ul>
     </nav>
 
 
     <br>
     <h1 id="tit">カテゴリー管理</h1>
+
+
+
+    <h2>Create a New Tag</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create</button>
+    </form>
+
+    <h3>Your Tags</h3>
+    <ul>
+    {% for tag in tags %}
+        <li>{{ tag.name }}</li>
+    {% endfor %}
+    </ul>
+
+
+
+
 
     <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
     <script>
@@ -81,3 +109,4 @@
 
     </script>
 </body>
+

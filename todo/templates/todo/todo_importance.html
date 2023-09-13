@@ -47,13 +47,18 @@
                     <a href="{% url 'category' %}">カテゴリー管理</a>
                 </span>
             </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'logout' %}">ログアウト</a>
+                </span>
+            </li>
         </ul>
     </nav>
 
     <br>
     <h1 id="tit">Todoリスト一覧</h1>
-    <h2>重さと日付考慮</h2>
-    <a href="{% url 'list' %}">重さと日付考慮</a>
+    <h2>重さのみ考慮</h2>
+    <a href="{% url 'list' %}"><button >重さと日付考慮</button></a>
     <form method="post" action="{% url 'delete' %}">
         {% csrf_token %}
         <div>
@@ -63,18 +68,17 @@
                     <th>内容</th>
                     <th>期限</th>
                     <th>重さ</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <th>タグ</th>
                 </tr>
-                {% for task in todos %}
+                {% for todo in todos %}
                 <tr>
-                    <td><input type="checkbox" name="task_ids" value="{{task.id}}"></td> <!-- 追加した列の内容 -->
-                    <td>{{ task.title }}</td>
-                    <td>{{ task.deadline }}</td>
-                    <td>{{ task.importance }}</td>
-                    <td><a href="{% url 'detail' task.pk %}">詳細</a></td>
-                    <td><a href="{% url 'update' task.pk %}">編集</a></td>
+                    <td><input type="checkbox" name="task_ids" value="{{todo.id}}"></td> <!-- 追加した列の内容 -->
+                    <td>{{ todo.title }}</td>
+                    <td>{{ todo.deadline }}</td>
+                    <td>{{ todo.importance }}</td>
+                    <td>{{ todo.tag }}</td>
+                    <td><a href="{% url 'detail' todo.pk %}">詳細</a></td>
+                    <td><a href="{% url 'update' todo.pk %}">編集</a></td>
                 </tr>
                 {% endfor %}
             </table>

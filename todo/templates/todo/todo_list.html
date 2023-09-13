@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="ja">
-{% load static %}
 
 <head>
     <meta charset="utf-8">
     <title>Rits小町のtodoリスト</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="manifest" href="{% static 'site.webmanifest' %}">
-    <link rel="apple-touch-icon" href="{% static 'icon.png' %}">
-
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#fafafa">
-
+    {% load static %}
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <link rel="stylesheet" href="{% static 'button.css' %}">
     <link rel="stylesheet" href="{% static 'menu-bar.css' %}">
     <link rel="stylesheet" href="{% static 'underline.css' %}">
     <link rel="stylesheet" href="{% static 'addbutton.css' %}">
     <link rel="stylesheet" href="{% static 'list.css' %}">
+    <style>
+        .tag1 { background-color: orange; }
+        .tag2 { background-color: lightblue; }
+        .tag3 { background-color: yellow; }
+        .tag4 { background-color: pink; }
+        .tag5 { background-color: yellowgreen; }
+    </style>
+
 </head>
 
 <body>
@@ -49,35 +55,38 @@
                     <a href="{% url 'category' %}">カテゴリー管理</a>
                 </span>
             </li>
+            <li class="textWrapper">
+                <span class="backgroundImage">
+                    <a href="{% url 'logout' %}">ログアウト</a>
+                </span>
+            </li>
         </ul>
     </nav>
 
-
     <br>
     <h1 id="tit">Todoリスト一覧</h1>
-    <a href="{% url 'logout' %}">ログアウト</a>
-    <h2>重さと日付考慮</h2>
-    <a href="{% url 'todo_importance' %}">重さのみ考慮</a>
+    <h2>重さのみ考慮</h2>
+    <a href="{% url 'todo_importance' %}"><button >重さ考慮</button></a>
     <form method="post" action="{% url 'delete' %}">
         {% csrf_token %}
         <div>
             <table>
-                <tr>
-                    <!-- 追加した列のヘッダー -->
+                <tr class="tag{{ todo.tag }}">
+                    <th></th> <!-- 追加した列のヘッダー -->
                     <th>内容</th>
                     <th>期限</th>
                     <th>重さ</th>
                     <th>タグ</th>
                 </tr>
-                {% for task in todos %}
-                <tr>
-                    <td><input type="checkbox" name="task_ids" value="{{task.id}}"></td>
-                    <td>{{ task.title }}</td>
-                    <td>{{ task.deadline }}</td>
-                    <td>{{ task.importance }}</td>
-                    <td>{{ task.tag }}</td>
-                    <td><a href="{% url 'detail' task.pk %}">詳細</a></td>
-                    <td><a href="{% url 'update' task.pk %}">編集</a></td>
+                {% for todo in todos %}
+                <tr class="tag{{ todo.tag }}">
+                    <td><input type="checkbox" name="task_ids" value="{{todo.id}}"></td> <!-- 追加した列の内容 -->
+                    <td>{{ todo.title }}</td>
+                    <td>{{ todo.deadline }}</td>
+                    <td>{{ todo.importance }}</td>
+                    <td>{{ todo.tag }}</td>
+                    <td><a href="{% url 'detail' todo.todo_id %}">詳細</a></td>
+                    <td><a href="{% url 'update' todo.todo_id %}">編集</a></td>
                 </tr>
                 {% endfor %}
             </table>
