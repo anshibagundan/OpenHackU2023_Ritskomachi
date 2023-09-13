@@ -35,9 +35,6 @@
     {% csrf_token %}
     <table>
         {{ form.as_table }}
-            {% for tag in form.tag.field.queryset %}
-            <option value="{{ tag.id }}">{{ tag.name }}</option>
-            {% endfor %}
     </table>
     <input type="submit" value="送信">
 </form>
