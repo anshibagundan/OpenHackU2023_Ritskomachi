@@ -16,13 +16,25 @@
     <link rel="stylesheet" href="{% static 'underline.css' %}">
     <link rel="stylesheet" href="{% static 'addbutton.css' %}">
     <link rel="stylesheet" href="{% static 'list.css' %}">
+     {% for todo in todos %}
     <style>
-        .tag1 { background-color: orange; }
-        .tag2 { background-color: lightblue; }
-        .tag3 { background-color: yellow; }
-        .tag4 { background-color: pink; }
-        .tag5 { background-color: yellowgreen; }
+        {% if todo.tag.id == 1 %}
+        .tag1 { background-color: {{ todo.tag.color}}; }
+        {%endif%}
+        {% if todo.tag.id == 2 %}
+        .tag2 { background-color: {{ todo.tag.color}}; }
+        {%endif%}
+        {% if todo.tag.id == 3 %}
+        .tag3 { background-color: {{ todo.tag.color}}; }
+        {%endif%}
+        {% if todo.tag.id == 4 %}
+        .tag4 { background-color: {{ todo.tag.color}}; }
+        {%endif%}
+        {% if todo.tag.id == 5 %}
+        .tag5 { background-color: {{ todo.tag.color}}; }
+        {%endif%}
     </style>
+    {% endfor %}
 
 </head>
 
@@ -79,16 +91,14 @@
                     <th>タグ</th>
                 </tr>
                 {% for todo in todos %}
-                <tr class="tag{{ todo.tag }}">
+                <tr class="tag{{ todo.tag.id }}" id="tag_color">
                     <td><input type="checkbox" name="task_ids" value="{{todo.id}}"></td>
-                    <div style="background-color: {{ todo.tag.color }};">
                     <td>{{ todo.title }}</td>
                     <td>{{ todo.deadline }}</td>
                     <td>{{ todo.importance }}</td>
                     <td>{{ todo.tag }}</td>
                     <td><a href="{% url 'detail' todo.todo_id %}">詳細</a></td>
                     <td><a href="{% url 'update' todo.todo_id %}">編集</a></td>
-                    </div>
                 </tr>
                 {% endfor %}
             </table>

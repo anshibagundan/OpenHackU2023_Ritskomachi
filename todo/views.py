@@ -53,8 +53,9 @@ class TaskListView(LoginRequiredMixin, ListView, mixins.MonthCalendarMixin):
 
 class TodoUpdate(LoginRequiredMixin, UpdateView):
     model = Todo
-    fields = ['title', 'description', 'deadline', 'importance']
-    success_url = reverse_lazy('todo_list')  # この部分を修正
+    template_name = 'todo/todo_form.html'
+    form_class = TodoForm  # この行を追加
+    success_url = reverse_lazy('list')
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -71,9 +72,10 @@ class TodoUpdate(LoginRequiredMixin, UpdateView):
         return response
 
     def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs.update({'user': self.request.user})
+        kwargs = super(TodoUpdate, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
         return kwargs
+
 
 
 

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 COLOR_CHOICES = [
     ('red', 'Red'),
     ('blue', 'Blue'),
+    ('orange', 'Orange')
     # ... 他の色を追加
 ]
 
