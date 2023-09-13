@@ -297,25 +297,32 @@ masks.forEach((mask, index) => {
     });
 });
 // ボタン要素とメニューバー要素を取得
+// ボタン要素とメニューバー要素を取得
 const taskButtons = document.querySelectorAll('#task-button');
 const taskBars = document.querySelectorAll('#task-bar');
 const calenderSlide = document.querySelector('#content-wrapper');
 
-
+count = 0//ここ追加
 taskButtons.forEach((taskButton, index) => {
     taskButton.addEventListener("click", () => {
-        // メニューバーの表示状態を切り替える
         if (taskBars[index].style.display === 'none' || taskBars[index].style.display === '') {
-            taskBars[index].style.display = 'block'; // メニューバーを表示
+            taskBars[index].style.display = 'block';
             calenderSlide.style.marginRight = '30%';
-            taskButton.textContent = day.day; // ボタンのテキストを変更
+            count += 1;//ここ追加
+            taskButton.textContent = day.day;
         } else {
-            taskBars[index].style.display = 'none'; // メニューバーを非表示
-            calenderSlide.style.marginRight = '0%';
-            taskButton.textContent = day.day; // ボタンのテキストを変更
-        }
+            taskBars[index].style.display = 'none';
+            count = 0
+            count +=1
+            count -=1
+
+            if (count <= 0){
+                calenderSlide.style.marginRight = '0%';
+            }
+
     });
 });
+
 // チェックボックス要素の取得
 const checkboxes = document.querySelectorAll('.checkbox');
 
