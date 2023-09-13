@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>タグの編集</h3>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.name.label }}: {{ form.name }}
+  {{ form.color.label }}: {{ form.color }}
+    <input type="submit" value="更新">
+</form>
+{% endblock %}

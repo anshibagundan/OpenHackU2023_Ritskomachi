@@ -13,6 +13,9 @@ urlpatterns = [
     path('update/<int:pk>/', TodoUpdate.as_view(), name='update'),
     path('delete/', BulkDeleteTasks.as_view(), name='delete'),
     path('todo_category/', TodoCategory.as_view(), name='category'),
+    path('create_category/', views.create_tag, name='create_category'),
+    path('edit_tag/<int:tag_id>/', views.edit_tag, name='edit_tag'),
+    path('delete_tag/<int:tag_id>/', views.delete_tag, name='delete_tag'),
     path('todo_calender/<int:year>/<int:month>/',TodoCalender.as_view(), name='calender'),
     path('create/', views.create_todo, name='create_todo'),
     path('importance/', todo_importance, name='todo_importance'),
@@ -20,6 +23,8 @@ urlpatterns = [
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('accounts/signup/', views.SignupView.as_view(), name='signup'),
     path('logout/', logout_view, name='logout'),
+
+
 
 ]
 urlpatterns += staticfiles_urlpatterns()

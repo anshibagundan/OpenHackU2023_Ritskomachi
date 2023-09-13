@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>タグの削除確認</h3>
+
+<p>本当に「{{ tag.name }}」を削除しますか？</p>
+
+<form method="post">
+    {% csrf_token %}
+    <input type="submit" value="削除">
+</form>
+
+<a href="{% url 'category' %}">キャンセル</a>
+{% endblock %}

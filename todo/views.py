@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, UpdateView
-from .models import Todo, TodoDay
-from .forms import TodoForm, TagForm
+from .models import Todo, TodoDay, Tag
+from .forms import TagForm,TodoForm
 from django.shortcuts import get_object_or_404
 from django.views import View
 from . import mixins
@@ -28,14 +28,6 @@ def logout_view(request):
     logout(request)
     return redirect('title')
 
-@login_required
-def todo_list(request):
-    todos = Todo.objects.filter(user=request.user)
-
-    context = {
-        'todos': todos
-    }
-    return render(request, 'todo_list.html', context)
 
 class TodoDetail(LoginRequiredMixin, DetailView):
     model = Todo
@@ -59,27 +51,31 @@ class TaskListView(LoginRequiredMixin, ListView, mixins.MonthCalendarMixin):
         return Todo.objects.filter(user=self.request.user)
 
 
-
 class TodoUpdate(LoginRequiredMixin, UpdateView):
     model = Todo
-    fields = "__all__"
-    success_url = '../..'
+    fields = ['title', 'description', 'deadline', 'importance']
+    success_url = reverse_lazy('todo_list')  # この部分を修正
 
     def form_valid(self, form):
         response = super().form_valid(form)
-
-        # Todo オブジェクトから TodoDay エントリを取得
         todo_day = get_object_or_404(TodoDay, todo=self.object)
 
-        # importance フィールドを正しく設定
+        todo_day.title = self.object.title
+        todo_day.description = self.object.description
+        todo_day.deadline = self.object.deadline
         todo_day.importance = self.object.importance
+        todo_day.tag = self.object.tag
 
-        # 他のフィールドも必要に応じて更新
-
-        # TodoDay エントリを保存
         todo_day.save()
 
         return response
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
+
 
 
 
@@ -123,6 +119,12 @@ class TodoCategory(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Todo.objects.filter(user=self.request.user)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tags'] = Tag.objects.filter(user=self.request.user)
+        return context
+
+
 
 @login_required
 def create_todo(request):
@@ -141,11 +143,11 @@ def create_todo(request):
                 description=todo.description,
                 deadline=todo.deadline,
                 importance=todo.importance,
-                tag=todo.tag if todo.tag else None
+                tag=todo.tag
             )
             return redirect('list')
     else:
-        form = TodoForm()
+        form = TodoForm(user=request.user)
 
     return render(request, 'todo/todo_form.html', {'form': form})
 
@@ -197,15 +199,46 @@ def todo_importance(request):
     }
     return render(request, 'todo/todo_importance.html', context)
 
-@login_required
 def create_tag(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = TagForm(request.POST)
         if form.is_valid():
-            tag = form.save(commit=False)
-            tag.user = request.user
-            tag.save()
-            return redirect('list')
+            # 同じ色のタグが存在しないかチェック
+            if not Tag.objects.filter(color=form.cleaned_data['color']).exists():
+                tag = form.save(commit=False)  # まだ保存せずにインスタンスを取得
+                tag.user = request.user  # ログインしているユーザの情報をセット
+                tag.save()  # データベースに保存
+                return redirect('category')  # 保存後のリダイレクト先を指定
+            else:
+                form.add_error('color', 'この色は既に使用されています。')
     else:
         form = TagForm()
-    return render(request, 'todo_list.html', {'form': form})
+    return render(request, 'todo/todo_create_category.html', {'form': form})
+
+def edit_tag(request, tag_id):
+    tag = get_object_or_404(Tag, id=tag_id)
+    if request.method == "POST":
+        form = TagForm(request.POST, instance=tag)
+        if form.is_valid():
+            # 同じ色のタグが存在しないか、もしくは現在のタグの色と変更しようとしている色が同じ場合のみ許可
+            if not Tag.objects.filter(color=form.cleaned_data['color']).exclude(id=tag.id).exists():
+                form.save()
+                return redirect('category')  # 保存後のリダイレクト先を指定
+            else:
+                form.add_error('color', 'この色は既に使用されています。')
+    else:
+        form = TagForm(instance=tag)
+    return render(request, 'todo/todo_edit_tag.html', {'form': form})
+
+
+
+@login_required
+def delete_tag(request, tag_id):
+    tag = get_object_or_404(Tag, id=tag_id, user=request.user)
+
+    if request.method == "POST":
+        tag.delete()
+        return redirect('category')
+
+    return render(request, 'todo/todo_confirm_delete_tag.html', {'tag': tag})
+

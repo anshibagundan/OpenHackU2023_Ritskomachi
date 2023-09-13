@@ -66,30 +66,33 @@
     </nav>
 
 
-    <br>
     <h1 id="tit">カテゴリー管理</h1>
-
-
-
-    <h2>Create a New Tag</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Create</button>
-    </form>
-
     <h3>Your Tags</h3>
-    <ul>
-    {% for tag in tags %}
-        <li>{{ tag.name }}</li>
-    {% endfor %}
-    </ul>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>タグ名</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tag in tags %}
+            <tr>
+                <td>{{ tag.name }}</td>
+                <td><a href="{% url 'edit_tag' tag.id %}">編集</a></td>
+                <td><a href="{% url 'delete_tag' tag.id %}">削除</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 
 
 
 
-    <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
+    <p><a href="{% url 'create_category' %}"><button id="add-button">+</button></a></p>
     <script>
         // ボタン要素とメニューバー要素を取得
         const toggleButton = document.getElementById('toggle-button');

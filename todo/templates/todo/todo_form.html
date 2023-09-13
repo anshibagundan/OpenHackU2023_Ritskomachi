@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 
 {% block head_extra %}
-  <meta charset="utf-8">
-  <title>Rits小町のtodoリスト</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<title>Rits小町のtodoリスト</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Add additional meta data if necessary -->
+<!-- Add additional meta data if necessary -->
 
-  <link rel="manifest" href="site.webmanifest">
-  <link rel="apple-touch-icon" href="icon.png">
-  <style>
+<link rel="manifest" href="site.webmanifest">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
     table {
         border-collapse: collapse;
     }
@@ -34,20 +34,10 @@
 {% endif %}
     {% csrf_token %}
     <table>
-        <select name="tag" id="tag">
-            <option value="" selected>タグなし</option>
-            {% for tag in form.tag.field.queryset %}
-                <option value="{{ tag.id }}">{{ tag.name }}</option>
-                {% if object.tag %}
-                {{ object.tag }}
-                {% endif %}
-            {% endfor %}
-        </select>
         {{ form.as_table }}
             {% for tag in form.tag.field.queryset %}
             <option value="{{ tag.id }}">{{ tag.name }}</option>
             {% endfor %}
-        </select>
     </table>
     <input type="submit" value="送信">
 </form>

@@ -2,9 +2,16 @@ from django.db import models
 
 from django.contrib.auth.models import User
 
+COLOR_CHOICES = [
+    ('red', 'Red'),
+    ('blue', 'Blue'),
+    # ... 他の色を追加
+]
+
 class Tag(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=10, blank=True)
+    color = models.CharField(max_length=10, choices=COLOR_CHOICES, unique=True)
 
     def __str__(self):
         return self.name
@@ -14,7 +21,7 @@ class Todo(models.Model):
     title = models.CharField("タスク名", max_length=30)
     description = models.TextField("詳細", blank=True)
     deadline = models.DateField("締切",null = True, blank = True)
-    tag = models.ForeignKey(Tag, null=True, on_delete=models.CASCADE, default='')
+    tag = models.ForeignKey(Tag, null=True, on_delete=models.CASCADE)
 
     VERY_IMPORTANT = 1
     IMPORTANT = 2
@@ -41,7 +48,7 @@ class TodoDay(models.Model):
     description = models.TextField()
     deadline = models.DateField()
     importance = models.PositiveIntegerField()
-    tag = models.ForeignKey(Tag, null=True, on_delete=models.CASCADE, default='')
+    tag = models.ForeignKey(Tag, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
