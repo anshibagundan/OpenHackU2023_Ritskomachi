@@ -16,6 +16,102 @@
     <link rel="stylesheet" href="{% static 'underline.css' %}">
     <link rel="stylesheet" href="{% static 'addbutton.css' %}">
     <link rel="stylesheet" href="{% static 'list.css' %}">
+    {% for todo in todos %}
+    <style>
+        .center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .title-size {
+            font-size: 300%;
+        }
+
+        .subtitle-size {
+            font-size: 150%;
+        }
+
+        .yellow-underline {
+            text-decoration: underline;
+            text-decoration-color: yellow;
+        }
+
+        .button-styled {
+            background-color: #007BFF; /* Bootstrap primary blue */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button-styled:hover {
+            background-color: #0056b3; /* Darker blue for hover effect */
+        }
+
+        .custom-checkbox {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #007BFF;
+            border-radius: 3px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        input[type="checkbox"] {
+            opacity: 0;
+            position: absolute;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        input[type="checkbox"]:checked + .custom-checkbox {
+            background-color: #007BFF;
+        }
+        th, td {
+            border: 1px solid rgba(170,189,191,0.568);
+            padding: 10px;
+            text-align: center;
+        }
+        {% if todo.tag.id == 1 %}
+        .tag1 {
+            background-color: {{ todo.tag.color}};
+            border:2px solid {{ todo.tag.color}};
+        }
+        {%endif%}
+        {% if todo.tag.id == 2 %}
+        .tag2 {
+            background-color: {{ todo.tag.color}};
+            border:2px solid {{ todo.tag.color}};
+        }
+        {%endif%}
+        {% if todo.tag.id == 3 %}
+        .tag3 {
+            background-color: {{ todo.tag.color}};
+            border:2px solid {{ todo.tag.color}};
+        }
+        {%endif%}
+        {% if todo.tag.id == 4 %}
+        .tag4 {
+            background-color: {{ todo.tag.color}};
+            border:2px solid {{ todo.tag.color}};
+        }
+        {%endif%}
+        {% if todo.tag.id == 5 %}
+        .tag5 {
+            background-color: {{ todo.tag.color}};
+            border:2px solid {{ todo.tag.color}};
+        }
+        {%endif%}
+    </style>
+    {% endfor %}
+
 </head>
 
 <body>
@@ -55,24 +151,39 @@
         </ul>
     </nav>
 
-    <br>
-    <h1 id="tit">Todoリスト一覧</h1>
-    <h2>重さのみ考慮</h2>
-    <a href="{% url 'list' %}"><button >重さと日付考慮</button></a>
+    <div class="center">
+        <h1 id="tit" class="yellow-underline increase-font">Todoリスト一覧</h1>
+        <h2 class="increase-font">重さと日付を考慮</h2>
+        <a href="{% url 'todo_importance' %}">
+            <button class="button-styled increase-font">重さ考慮</button>
+        </a>
+    </div>
+
+    <div class="center">
+        <h3 class="yellow-underline increase-font">今日やること</h3>
+
+    </div>
+
+
     <form method="post" action="{% url 'delete' %}">
         {% csrf_token %}
         <div>
             <table>
-                <tr>
-                    <th></th> <!-- 追加した列のヘッダー -->
+                <tr class="tag{{ todo.tag }}">
+                    <th></th>
                     <th>内容</th>
                     <th>期限</th>
                     <th>重さ</th>
                     <th>タグ</th>
                 </tr>
                 {% for todo in todos %}
-                <tr>
-                    <td><input type="checkbox" name="task_ids" value="{{todo.id}}"></td> <!-- 追加した列の内容 -->
+                <tr class="tag{{ todo.tag.id }}" id="tag_color">
+                    <td>
+                        <label>
+                            <input type="checkbox" name="task_ids" value="{{todo.id}}">
+                            <span class="custom-checkbox"></span>
+                        </label>
+                    </td>
                     <td>{{ todo.title }}</td>
                     <td>{{ todo.deadline }}</td>
                     <td>{{ todo.importance }}</td>
@@ -83,9 +194,9 @@
                 {% endfor %}
             </table>
         </div>
-        <button type="submit" id="deleteSelectedButton" style="display: none;">選択したタスクを削除</button>
-
+        <button type="submit" id="deleteSelectedButton" class="button-styled" style="display: none;">選択したタスクを削除</button>
     </form>
+
     <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
     <script src="{% static 'script.js' %}"></script>
     <script>

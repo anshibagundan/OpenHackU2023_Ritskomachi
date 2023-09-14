@@ -201,36 +201,39 @@ def todo_importance(request):
     }
     return render(request, 'todo/todo_importance.html', context)
 
+@login_required
 def create_tag(request):
     if request.method == "POST":
         form = TagForm(request.POST)
         if form.is_valid():
-            # 同じ色のタグが存在しないかチェック
-            if not Tag.objects.filter(color=form.cleaned_data['color']).exists():
-                tag = form.save(commit=False)  # まだ保存せずにインスタンスを取得
-                tag.user = request.user  # ログインしているユーザの情報をセット
-                tag.save()  # データベースに保存
-                return redirect('category')  # 保存後のリダイレクト先を指定
+            # このユーザの中で同じ色のタグが存在しないかチェック
+            if not Tag.objects.filter(color=form.cleaned_data['color'], user=request.user).exists():
+                tag = form.save(commit=False)
+                tag.user = request.user
+                tag.save()
+                return redirect('category')
             else:
                 form.add_error('color', 'この色は既に使用されています。')
     else:
         form = TagForm()
     return render(request, 'todo/todo_create_category.html', {'form': form})
 
+@login_required
 def edit_tag(request, tag_id):
     tag = get_object_or_404(Tag, id=tag_id)
     if request.method == "POST":
         form = TagForm(request.POST, instance=tag)
         if form.is_valid():
-            # 同じ色のタグが存在しないか、もしくは現在のタグの色と変更しようとしている色が同じ場合のみ許可
-            if not Tag.objects.filter(color=form.cleaned_data['color']).exclude(id=tag.id).exists():
+            # このユーザの中で同じ色のタグが存在しないか、または現在のタグの色と変更しようとしている色が同じ場合のみ許可
+            if not Tag.objects.filter(color=form.cleaned_data['color'], user=request.user).exclude(id=tag.id).exists():
                 form.save()
-                return redirect('category')  # 保存後のリダイレクト先を指定
+                return redirect('category')
             else:
                 form.add_error('color', 'この色は既に使用されています。')
     else:
         form = TagForm(instance=tag)
     return render(request, 'todo/todo_edit_tag.html', {'form': form})
+
 
 
 
@@ -243,4 +246,3 @@ def delete_tag(request, tag_id):
         return redirect('category')
 
     return render(request, 'todo/todo_confirm_delete_tag.html', {'tag': tag})
-

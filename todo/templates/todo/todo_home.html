@@ -22,14 +22,48 @@
     <link rel="stylesheet" href="{% static 'underline.css' %}">
     <link rel="stylesheet" href="{% static 'addbutton.css' %}">
     <link rel="stylesheet" href="{% static 'list.css' %}">
-    <link rel="stylesheet" href="{% static 'home.css' %}">
+
     <style>
-        .tag1 { background-color: orange; }
-        .tag2 { background-color: lightblue; }
-        .tag3 { background-color: yellow; }
-        .tag4 { background-color: pink; }
-        .tag5 { background-color: yellowgreen; }
+
+        th, td {
+            border: 1px solid rgba(170,189,191,0.568);
+            padding: 10px;
+            text-align: center;
+        }
+        {% for task in tasks %}
+        .tag{{task.tag.id}} {
+            background-color: {{ task.tag.color }};
+            border: 2px solid {{ task.tag.color }};
+        }
+        {% endfor %}
+
+        #modal {
+            display: none; /* 最初は隠しておく */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            z-index: 1000;
+            border: 1px solid black;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        #mask {
+            display: none; /* 最初は隠しておく */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+
     </style>
+
 </head>
 
 <body>
@@ -61,11 +95,6 @@
                     <a href="{% url 'category' %}">カテゴリー管理</a>
                 </span>
             </li>
-            <li class="textWrapper">
-                <span class="backgroundImage">
-                    <a href="{% url 'logout' %}">ログアウト</a>
-                </span>
-            </li>
         </ul>
     </nav>
 
@@ -73,42 +102,48 @@
     <h1 id="tit">今日のToDo</h1>
 
     <div>
-        <h1>Tasks</h1>
         <ul>
 
             <form method="post" action="{% url 'delete' %}">
                 {% csrf_token %}
 
                 <table>
-                    {% for task in tasks %}
-                    {% with task.deadline|date:"m" as task_month %}
-                    {% if now == task.deadline %}
-                    <div class="btn-container">
-                        <tr class="tag{{ task.tag }}">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>内容</th>
+                            <th>詳細</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in tasks %}
+                        {% with task.deadline|date:"m" as task_month %}
+                        {% if now == task.deadline %}
+                        <tr class="tag{{ task.tag.id }}"> <!-- こちらの行を追加 -->
                             <td><input type="checkbox" name="task_ids" value="{{ task.id }}" /></td>
-                            <th>
-                                <button2 class="btn-trigger" data-trget="modal">{{task.title}}</button2>
-                            </th>
+                            <td>{{task.title}}</td>
+                            <td>
+                                <button2 class="btn-trigger" data-trget="modal">詳細</button2>
+                                <div id="mask" class="hidden"></div>
+                                <section id="modal" class="hidden">
+                                    <p>
+                                        {{task.title}}<br>
+                                        <br>
+                                        {{task.description}}<br>
+                                        <br>
+                                        {{task.deadline}}<br>
+                                        <br>
+                                        <a href="{% url 'update' task.pk %}">編集</a>
+                                    </p>
+                                </section>
+                            </td>
                         </tr>
-                    </div>
-                    <div id="mask" class="hidden"></div>
-
-                    <section id="modal" class="hidden">
-                        <tr class="tag{{ task.tag }}">
-                            {{task.title}}<br>
-                            <br>
-                            {{task.description}}<br>
-                            <br>
-                            {{task.deadline}}<br>
-                            <br>
-                            {{task.tag}}
-                            <a href="{% url 'update' task.pk %}">編集</a>
-                        </tr>
-                    </section>
-                    {% endif %}
-                    {% endwith %}
-                    {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                        {% endfor %}
+                    </tbody>
                 </table>
+
                 <button type="submit" id="deleteSelectedButton" style="display: none;">選択したタスクを削除</button>
 
             </form>
@@ -119,27 +154,22 @@
     <script src="{% static 'home.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            let checkboxes = document.querySelectorAll('input[type="checkbox"][name="task_ids"]');
-            let deleteButton = document.getElementById('deleteSelectedButton');
+            const taskTitles = document.querySelectorAll('.btn-trigger');
+            const modal = document.getElementById('modal');
+            const mask = document.getElementById('mask');
 
-            checkboxes.forEach(function(checkbox) {
-                checkbox.addEventListener('change', function() {
-                    // チェックされているチェックボックスの数を数える
-                    let checkedCount = 0;
-                    checkboxes.forEach(function(c) {
-                        if (c.checked) {
-                            checkedCount++;
-                        }
-                    });
-
-                    // チェックが一つ以上あればボタンを表示、なければ非表示
-                    if (checkedCount > 0) {
-                        deleteButton.style.display = 'block';
-                    } else {
-                        deleteButton.style.display = 'none';
-                    }
+            taskTitles.forEach(title => {
+                title.addEventListener('click', function() {
+                    modal.style.display = 'block';
+                    mask.style.display = 'block';
                 });
             });
+
+            mask.addEventListener('click', function() {
+                modal.style.display = 'none';
+                mask.style.display = 'none';
+            });
         });
+
     </script>
 </body>

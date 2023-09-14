@@ -3,16 +3,27 @@ from django.db import models
 from django.contrib.auth.models import User
 
 COLOR_CHOICES = [
-    ('red', 'Red'),
-    ('blue', 'Blue'),
-    ('orange', 'Orange')
+    ('230 230 250', 'むらさき'),
+    ('240 255 240', 'きみどり'),
+    ('255 255 240', 'きいろ'),
+    ('255 239 213', 'オレンジ'),
+    ('255 240 245', 'ピンク'),
+    ('255 228 225', 'ピンクオレンジ'),
+    ('224 255 255', 'あお'),
+    ('245 245 245', 'グレー'),
+    ('255 182 193','あか'),
+    ('102 205 170', 'みどり')
+
     # ... 他の色を追加
 ]
 
 class Tag(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=10, blank=True)
-    color = models.CharField(max_length=10, choices=COLOR_CHOICES, unique=True)
+    color = models.CharField(max_length=11, choices=COLOR_CHOICES)
+
+    class Meta:
+        unique_together = ['user', 'color']
 
     def __str__(self):
         return self.name
