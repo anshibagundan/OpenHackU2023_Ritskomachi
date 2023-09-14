@@ -12,7 +12,7 @@ COLOR_CHOICES = [
     ('lightcyan', 'あお'),
     ('whitesmoke', 'グレー'),
     ('lightpink','あか'),
-    ('palegreen', 'みどり')
+    ('palegreen', 'みどり'),
 
     # ... 他の色を追加
 ]
