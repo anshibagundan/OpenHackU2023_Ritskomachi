@@ -25,6 +25,73 @@
     <link rel="stylesheet" href="{% static 'underline.css' %}">
     <link rel="stylesheet" href="{% static 'addbutton.css' %}">
     <link rel="stylesheet" href="{% static 'list.css' %}">
+
+    <style>
+        .center {
+            text-align: center;
+        }
+
+        .title-size {
+            font-size: 300%;
+        }
+
+        .subtitle-size {
+            font-size: 150%;
+        }
+
+
+        .yellow-underline {
+            text-decoration: underline;
+            text-decoration-color: yellow;
+        }
+
+        .button-styled {
+            background-color: #007BFF; /* Bootstrap primary blue */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button-styled:hover {
+            background-color: #0056b3; /* Darker blue for hover effect */
+        }
+
+        .custom-checkbox {
+            position: relative;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #007BFF;
+            border-radius: 3px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        input[type="checkbox"] {
+            opacity: 0;
+            position: absolute;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        input[type="checkbox"]:checked + .custom-checkbox {
+            background-color: #007BFF;
+        }
+        th, td {
+            border: 1px solid rgba(170,189,191,0.568);
+            padding: 10px;
+            text-align: center;
+        }
+        {% for tag in tags %}
+        .tag-bg-{{tag.id}} {
+            background-color: {{ tag.color }};
+        }
+        {% endfor %}
+
+    </style>
 </head>
 
 <body>
@@ -66,8 +133,8 @@
     </nav>
 
 
+    <br>
     <h1 id="tit">カテゴリー管理</h1>
-    <h3>Your Tags</h3>
 
     <table border="1">
         <thead>
@@ -79,12 +146,13 @@
         </thead>
         <tbody>
             {% for tag in tags %}
-            <tr>
+            <tr class="tag-bg-{{tag.id}}">
                 <td>{{ tag.name }}</td>
                 <td><a href="{% url 'edit_tag' tag.id %}">編集</a></td>
                 <td><a href="{% url 'delete_tag' tag.id %}">削除</a></td>
             </tr>
             {% endfor %}
+
         </tbody>
     </table>
 
@@ -103,10 +171,10 @@
             // メニューバーの表示状態を切り替える
             if (menuBar.style.display === 'none' || menuBar.style.display === '') {
                 menuBar.style.display = 'block'; // メニューバーを表示
-                toggleButton.textContent = '×'; // ボタンのテキストを変更
+                toggleButton.textContent = 'メニューを表示'; // ボタンのテキストを変更
             } else {
                 menuBar.style.display = 'none'; // メニューバーを非表示
-                toggleButton.textContent = '≡'; // ボタンのテキストを変更
+                toggleButton.textContent = 'メニューを非表示'; // ボタンのテキストを変更
             }
         });
 
