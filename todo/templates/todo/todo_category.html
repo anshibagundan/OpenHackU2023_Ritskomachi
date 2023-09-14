@@ -1,102 +1,124 @@
-
+<!DOCTYPE html>
+<html lang="ja">
+<html>
 
 <head>
-    <meta charset="utf-8">
-    <title>Rits小町のtodoリスト</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
-
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="apple-touch-icon" href="icon.png">
-    <meta name="theme-color" content="#fafafa">
+    <meta charset="UTF-8">
+    <title>final</title>
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <link rel="stylesheet" href="{% static 'button.css' %}">
     <link rel="stylesheet" href="{% static 'menu-bar.css' %}">
     <link rel="stylesheet" href="{% static 'underline.css' %}">
-    <link rel="stylesheet" href="{% static 'addbutton.css' %}">
-    <link rel="stylesheet" href="{% static 'list.css' %}">
-
+    <link rel="stylesheet" href="{% static 'color.css' %}">
     <style>
-        .center {
-            text-align: center;
+        /* 画面上部中央に配置するためのスタイル */
+        .tag-container {
+            margin-left: 30%;
         }
 
-        .title-size {
-            font-size: 300%;
-        }
-
-        .subtitle-size {
-            font-size: 150%;
-        }
-
-
-        .yellow-underline {
-            text-decoration: underline;
-            text-decoration-color: yellow;
-        }
-
-        .button-styled {
-            background-color: #007BFF; /* Bootstrap primary blue */
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 10px 15px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .button-styled:hover {
-            background-color: #0056b3; /* Darker blue for hover effect */
-        }
-
-        .custom-checkbox {
-            position: relative;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #007BFF;
-            border-radius: 3px;
-            cursor: pointer;
-            display: inline-block;
-        }
-
-        input[type="checkbox"] {
-            opacity: 0;
-            position: absolute;
-            cursor: pointer;
-            height: 0;
-            width: 0;
-        }
-
-        input[type="checkbox"]:checked + .custom-checkbox {
-            background-color: #007BFF;
-        }
-        th, td {
-            border: 1px solid rgba(170,189,191,0.568);
+        /* メニューバーのデフォルトのスタイル */
+        #menu-bar {
+            background-color: #fff;
+            color: #000;
             padding: 10px;
-            text-align: center;
+            border: 1px solid #000000;
+            width: 40%;
+            height: 90%;
+            margin: auto;
+            align-items: center;
         }
-        {% for tag in tags %}
-        .tag-bg-{{tag.id}} {
-            background-color: {{ tag.color }};
+
+        /* ボタンのスタイル */
+        button {
+            padding: 10px 20px;
+            color: #fff;
+            cursor: pointer;
+            height: 40px;     /* 高さを固定 */
+            width: 100px;     /* 幅を固定 */
+            box-sizing: border-box; /* ボーダーやパディングをサイズに含める */
         }
-        {% endfor %}
+        .newcolor {
+            height: 40px;   /* 例えば40pxに設定。必要に応じて調整してください。 */
+            width: 40px;    /* 例えば40pxに設定。必要に応じて調整してください。 */
+        }
+
+
+        .color-button {
+            margin-top: 10px;
+            /* ボタンの上に10pxの上部マージンを設定 */
+            margin-bottom: 10px;
+            /* ボタンの下に10pxの下部マージンを設定 */
+            margin-right: 10px;
+            /* ボタン間の水平間隔を設定 */
+        }
+
+        #a {
+            background-color: rgba(255, 0, 0, 0.598);
+            border: 1px solid rgb(183, 0, 0);
+        }
+
+        #b {
+            background-color: #00000052;
+            border: 1px solid #333;
+        }
+
+        #c {
+            background-color: rgba(0, 176, 0, 0.601);
+            border: 1px solid rgb(0, 66, 0);
+        }
+
+        #add-tag-button {
+            background-color: #333;
+            border: 1px solid rgb(0, 0, 0);
+            font-size: medium;
+        }
+
+        #submit {
+            background-color: #333;
+            border: 1px solid rgb(0, 0, 0);
+        }
+
+        /* オーバーレイのスタイル */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            display: none;
+        }
+
+
+        /* オーバーレイ内のフォームのスタイル */
+        #tag-form {
+            position: absolute;
+            top: 50%;
+            left: 60%; /* これによりフォームは画面の60%の位置から表示されます */
+            transform: translateY(-50%);
+            padding: 20px;
+            background-color: #fff;
+            z-index: 1000;
+            border-radius: 5px;
+        }
+
+        #back {
+            font-size: larger;
+            position: absolute;
+            right: 5%;
+            display: flex;
+            background-color: #333;
+            border: 1px solid rgb(0, 0, 0);
+        }
 
     </style>
 </head>
 
 <body>
-
-    <td><button id="toggle-button">メニューを表示</button></td>
+<button id="toggle-button">メニューを表示</button>
     <nav id="menu-bar">
         <nav id="option-button">
             <a href="{% url 'todo_home' %}"><img src="{% static 'option.png' %}" alt="option"></a>
@@ -131,53 +153,276 @@
             </li>
         </ul>
     </nav>
-
-
-    <br>
-    <h1 id="tit">カテゴリー管理</h1>
-
-    <table border="1">
-        <thead>
-            <tr>
-                <th>タグ名</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for tag in tags %}
-            <tr class="tag-bg-{{tag.id}}">
-                <td>{{ tag.name }}</td>
-                <td><a href="{% url 'edit_tag' tag.id %}">編集</a></td>
-                <td><a href="{% url 'delete_tag' tag.id %}">削除</a></td>
-            </tr>
-            {% endfor %}
-
-        </tbody>
-    </table>
+    <div class="tag-container">
+        {% for tag in tags %}
+        <div class="tag-bg-{{tag.id}}">
+            <button id="{{tag.id}}" class="tag" style="background-color: {{tag.color}};">{{ tag.name }}</button>
+        </div>
+        {% endfor %}
 
 
 
+        <!-- 新しいタグを追加するボタン -->
+        <button id="add-tag-button" onclick="showTagForm()">+</button>
 
 
-    <p><a href="{% url 'create_category' %}"><button id="add-button">+</button></a></p>
+    <!-- 新しいタグを追加するフォーム -->
+    <div id="overlay">
+        <div id="tag-form">
+            <form id="tag-form-element">
+                <div id="error-message" style="color: red; display: none;"></div>
+
+                <button onclick="closeTagForm()"id="back">x</button>
+                <label for="tag-id">新しいタグのID:</label>
+                <!-- 改行 -->
+                <p></p>
+                <input type="text" id="tag-id" name="tag-id" required>
+                <!-- 改行 -->
+                <p></p>
+                <label>色を選択してください:</label>
+                <!-- 改行 -->
+                <p></p>
+                <input type="hidden" id="selected-color-input" name="color">
+                <!-- 他の色のボタンを追加できます -->
+                <button class="red-button newcolor" data-color="red"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+            <button class="white-button newcolor" data-color="white"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+            <button class="green-button newcolor" data-color="green"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+            <button class="blue-button newcolor" data-color="blue"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+            <button class="purple-button newcolor" data-color="purple"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+            <button class="orange-button newcolor" data-color="orange"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+            <p></p>
+            <button class="pink-button newcolor" data-color="pink"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+            <button class="cyan-button newcolor" data-color="cyan"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+            <button class="brown-button newcolor" data-color="brown"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+            <button class="lime-button newcolor" data-color="lime"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+            <button class="violet-button newcolor" data-color="violet"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+            <button class="indigo-button newcolor" data-color="indigo"onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+                <!-- 改行 -->
+                <p></p>
+                <button id="addButton" type="button" onclick="addTag()">追加</button>
+            </form>
+        </div>
+    </div>
+    <div id="tagsContainer"></div> <!-- ここに追加 -->
+</div>
+
+    <nav id="menu-bar">
+        <!-- メニューコンテンツ -->
+        <section class="color-select">
+        <h2>カラーを選んで</h2>
+        <button class="red-button newcolor" data-color="red" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        <button class="white-button newcolor" data-color="white" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        <button class="green-button newcolor" data-color="green" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        <button class="blue-button newcolor" data-color="blue" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        <button class="purple-button newcolor" data-color="purple" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        <button class="orange-button newcolor" data-color="orange" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        <p></p>
+        <button class="pink-button newcolor" data-color="pink" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        <button class="cyan-button newcolor" data-color="cyan" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        <button class="brown-button newcolor" data-color="brown" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        <button class="lime-button newcolor" data-color="lime" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        <button class="violet-button newcolor" data-color="violet" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        <button class="indigo-button newcolor" data-color="indigo" onclick="selectColor(this)">&emsp;&emsp;&emsp;</button>
+        </section>
+        </nav>
+
     <script>
-        // ボタン要素とメニューバー要素を取得
-        const toggleButton = document.getElementById('toggle-button');
-        const menuBar = document.getElementById('menu-bar');
+// クラス名 'tag' を持つボタン要素を取得
+const tagButtons = document.querySelectorAll('.tag');
+// クラス名 'newcolor' を持つボタン要素を取得
+const colorButtons = document.querySelectorAll('.newcolor');
 
-        // ボタンをクリックしたときの動作を設定
-        toggleButton.addEventListener("click", () => {
-            // メニューバーの表示状態を切り替える
-            if (menuBar.style.display === 'none' || menuBar.style.display === '') {
-                menuBar.style.display = 'block'; // メニューバーを表示
-                toggleButton.textContent = 'メニューを非表示'; // ボタンのテキストを変更
+let selectedTagID = null; // 選択されたタグのIDを保存
+
+// タグボタンクリック時の処理
+tagButtons.forEach(button => {
+    button.addEventListener("click", function(event) {
+        event.preventDefault();
+
+        // タグのIDと名前、色を取得
+        selectedTagID = this.id;
+        const tagName = this.innerText;
+        const tagColor = this.style.backgroundColor;
+
+        // フォームの入力フィールドにタグの情報を設定
+        document.getElementById("tag-id").value = tagName;
+
+        // 色の選択ボタンの選択状態をリセット
+        colorButtons.forEach(button => button.textContent = "　　　");
+        // 対応する色の選択ボタンに✔をセット
+        const matchingColorButton = document.querySelector(`[data-color="${tagColor}"]`);
+
+        if (matchingColorButton) {
+            matchingColorButton.textContent = "　✔︎　";
+        }
+
+        // フォームをそのタグの隣に表示
+        this.parentNode.appendChild(document.getElementById("tag-form"));
+        document.getElementById("tag-form").style.display = "block";
+
+        // 追加ボタンのテキストを「更新」に変更
+        document.getElementById("addButton").innerText = "更新";
+    });
+});
+
+
+// カラーボタンクリック時の処理
+colorButtons.forEach(button => {
+    button.addEventListener("click", function(event) {
+        event.preventDefault();
+        const selectedColor = this.getAttribute("data-color");
+
+        let colorConflict = [...tagButtons].some(tagButton => getComputedStyle(tagButton).backgroundColor === selectedColor);
+
+        if (colorConflict) {
+            displayErrorMessage("同じ色は選べません。");
+            return;
+        }
+
+        colorButtons.forEach(button => button.textContent = "　　　");
+        this.textContent = "　✔︎　";
+
+        if (selectedTagID) {
+            const tagButton = document.getElementById(selectedTagID);
+            tagButton.style.backgroundColor = selectedColor;  // タグの背景色を直接変更
+        }
+    });
+});
+
+
+// フォーム表示関数
+function showTagForm() {
+    selectedTagID = null;  // 編集モードをオフに
+    document.getElementById("tag-id").value = "";  // タグ名をリセット
+    document.getElementById("selected-color-input").value = "";  // 選択された色をリセット
+    document.getElementById("addButton").innerText = "追加";  // ボタンのテキストを「追加」に戻す
+    document.getElementById("overlay").style.display = "block";
+}
+
+
+function closeTagForm() {
+    document.getElementById("tag-form").style.display = "none";
+    // オーバーレイを非表示にする
+    document.getElementById("overlay").style.display = "none";
+}
+
+
+
+const csrftoken = '{{ csrf_token }}';
+
+function addTag() {
+    showTagForm(); // これを追加
+    const selectedColor = document.getElementById("selected-color-input").value;
+    const tagName = document.getElementById("tag-id").value.trim();
+
+    // 編集モードの場合は、既存のタグを更新
+    if (selectedTagID) {
+        fetch('/todo_category/update_tag/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                'tag_id': selectedTagID,
+                'tag_name': tagName,
+                'color': selectedColor
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // タグの情報を更新（UI）
+                const tagButton = document.getElementById(selectedTagID);
+                tagButton.innerText = tagName;
+                tagButton.style.backgroundColor = selectedColor;
+
+                // フォームをリセット
+                document.getElementById("tag-id").value = '';
+                document.getElementById("selected-color-input").value = '';
+
+                // フォームを非表示にする
+                closeTagForm();
             } else {
-                menuBar.style.display = 'none'; // メニューバーを非表示
-                toggleButton.textContent = 'メニューを表示'; // ボタンのテキストを変更
+                displayErrorMessage('タグの更新に失敗しました。');
             }
         });
 
-    </script>
+        return;
+    }
+
+    fetch('/todo_category/add_tag/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({
+            'tag_name': tagName, // タグ名を送信
+            'color': selectedColor
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const addButton = document.getElementById("add-tag-button");
+            const div = document.createElement("div");
+            div.classList.add(`tag-bg-${tagName}`);
+            const tagButton = document.createElement("button");
+            tagButton.classList.add("tag");
+            tagButton.id = tagName;
+            tagButton.innerText = tagName;
+            tagButton.style.backgroundColor = selectedColor;  // 新しいタグの背景色を直接設定
+            div.appendChild(tagButton);
+
+            addButton.parentNode.insertBefore(div, addButton);
+
+            closeTagForm();
+        } else {
+            displayErrorMessage('同じ色は選べません。');
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    let addButton = document.getElementById("addButton");
+    if (addButton) {
+        addButton.addEventListener("click", addTag);
+    } else {
+        console.error("addButton element not found");
+    }
+});
+
+
+function selectColor(element) {
+    let selectedColor = element.getAttribute("data-color");
+    document.getElementById("selected-color-input").value = selectedColor;
+}
+function displayErrorMessage(message) {
+    const errorMessageDiv = document.getElementById("error-message");
+    errorMessageDiv.textContent = message;
+    errorMessageDiv.style.display = "block";
+}
+
+
+
+// ボタン要素とメニューバー要素を取得
+const toggleButton = document.getElementById('toggle-button');
+const menuBar = document.getElementById('menu-bar');
+
+// ボタンをクリックしたときの動作を設定
+toggleButton.addEventListener("click", () => {
+    // メニューバーの表示状態を切り替える
+    if (menuBar.style.display === 'none' || menuBar.style.display === '') {
+        menuBar.style.display = 'block'; // メニューバーを表示
+        toggleButton.textContent = 'メニューを非表示'; // ボタンのテキストを変更
+    } else {
+        menuBar.style.display = 'none'; // メニューバーを非表示
+        toggleButton.textContent = 'メニューを表示'; // ボタンのテキストを変更
+    }
+});
+
+</script>
 </body>
 
+</html>

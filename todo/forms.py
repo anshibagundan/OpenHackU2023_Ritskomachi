@@ -5,7 +5,6 @@ class TagForm(forms.ModelForm):
     class Meta:
         model = Tag
         fields = ['name', 'color']
-    color = forms.ChoiceField(choices=COLOR_CHOICES, widget=forms.Select(attrs={'class': 'color-dropdown'}))
 
 class TodoForm(forms.ModelForm):
     class Meta:

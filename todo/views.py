@@ -12,6 +12,9 @@ from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import CreateView
 from django.contrib.auth import logout
+from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 
 def title_page(request):
@@ -113,18 +116,6 @@ class TodoCalender(LoginRequiredMixin, ListView, mixins.MonthCalendarMixin):
         return Todo.objects.filter(user=self.request.user)
 
 
-class TodoCategory(LoginRequiredMixin, ListView):
-    model = Todo
-    template_name = 'todo/todo_category.html'
-    context_object_name = "tasks"
-
-    def get_queryset(self):
-        return Todo.objects.filter(user=self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['tags'] = Tag.objects.filter(user=self.request.user)
-        return context
 
 
 
@@ -192,6 +183,7 @@ def update_tododay(sender, instance, **kwargs):
 def transform_importance(importance):
     return 6 - importance
 
+
 @login_required
 def todo_importance(request):
     todos_sorted_by_importance = Todo.objects.filter(user=request.user).order_by('importance')
@@ -201,9 +193,23 @@ def todo_importance(request):
     }
     return render(request, 'todo/todo_importance.html', context)
 
-@login_required
-def create_tag(request):
-    if request.method == "POST":
+
+
+class TodoCategory(LoginRequiredMixin, ListView):
+    model = Todo
+    template_name = 'todo/todo_category.html'
+    context_object_name = "tasks"
+
+    def get_queryset(self):
+        return Todo.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tags'] = Tag.objects.filter(user=self.request.user)
+        context['form'] = TagForm()  # タグのフォームもコンテキストに追加
+        return context
+
+    def post(self, request, *args, **kwargs):
         form = TagForm(request.POST)
         if form.is_valid():
             # このユーザの中で同じ色のタグが存在しないかチェック
@@ -211,38 +217,83 @@ def create_tag(request):
                 tag = form.save(commit=False)
                 tag.user = request.user
                 tag.save()
-                return redirect('category')
+                return JsonResponse({"success": True, "message": "Tag created successfully."})
             else:
                 form.add_error('color', 'この色は既に使用されています。')
-    else:
-        form = TagForm()
-    return render(request, 'todo/todo_create_category.html', {'form': form})
+                return JsonResponse({"success": False, "message": "この色は既に使用されています。"})
+
+        # エラーがあれば、それを返す
+        errors = form.errors.as_json()
+        return JsonResponse({"success": False, "errors": errors})
 
 @login_required
-def edit_tag(request, tag_id):
-    tag = get_object_or_404(Tag, id=tag_id)
+def add_tag(request):
+
+
     if request.method == "POST":
-        form = TagForm(request.POST, instance=tag)
-        if form.is_valid():
-            # このユーザの中で同じ色のタグが存在しないか、または現在のタグの色と変更しようとしている色が同じ場合のみ許可
-            if not Tag.objects.filter(color=form.cleaned_data['color'], user=request.user).exclude(id=tag.id).exists():
-                form.save()
-                return redirect('category')
-            else:
-                form.add_error('color', 'この色は既に使用されています。')
-    else:
-        form = TagForm(instance=tag)
-    return render(request, 'todo/todo_edit_tag.html', {'form': form})
+        # リクエストから必要なデータを取得
+        data = json.loads(request.body.decode('utf-8'))
+        tagName = data.get('tag_name')
+        color = data.get('color')
+
+        if not tagName:
+            return JsonResponse({"success": False, "message": "Tag name is required."})
+
+
+        # タグをデータベースに追加
+        try:
+
+            # ユーザーに紐づく新しいタグを作成
+            tag = Tag.objects.create(
+                user=request.user,
+                name=tagName,  # タグ名を設定
+                color=color
+            )
+
+
+            # タグが正常に作成された場合のレスポンス
+            return JsonResponse({"success": True, "message": "Tag created successfully."})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": f"Error {type(e).__name__}: {str(e)}"})
+
+
+    # POSTリクエストでない場合のエラーレスポンス
+    return JsonResponse({"success": False, "message": "Invalid request method."})
 
 
 
-
+@csrf_exempt
 @login_required
-def delete_tag(request, tag_id):
-    tag = get_object_or_404(Tag, id=tag_id, user=request.user)
-
+def update_tag(request):
     if request.method == "POST":
-        tag.delete()
-        return redirect('category')
+        data = json.loads(request.body.decode('utf-8'))
+        tag_id = data.get('tag_id')
+        tag_name = data.get('tag_name')
+        color = data.get('color')
 
-    return render(request, 'todo/todo_confirm_delete_tag.html', {'tag': tag})
+        try:
+            tag = Tag.objects.get(pk=tag_id, user=request.user)  # ユーザーとタグIDでタグを取得
+            tag.name = tag_name
+            tag.color = color
+            tag.save()
+
+            return JsonResponse({"success": True, "message": "Tag updated successfully."})
+        except Tag.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Tag not found."})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": f"Error {type(e).__name__}: {str(e)}"})
+
+    return JsonResponse({"success": False, "message": "Invalid request method."})
+
+@csrf_exempt
+@login_required
+def delete_tags(request):
+    if request.method == "POST":
+        try:
+            tag_ids = request.POST.getlist('tag_ids[]')
+            Tag.objects.filter(id__in=tag_ids).delete()
+            return JsonResponse({"status": "success"})
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
+
+    return JsonResponse({"status": "error", "message": "Invalid request method"})

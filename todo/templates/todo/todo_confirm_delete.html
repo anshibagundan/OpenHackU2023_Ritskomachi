@@ -3,43 +3,66 @@
     <title>Rits小町のtodoリスト</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
-
     <link rel="manifest" href="site.webmanifest">
     <link rel="apple-touch-icon" href="icon.png">
     <style>
-        table {
-            border-collapse: collapse;
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 40px;
+            background-color: #e7eaaf;
         }
 
-        th,
-        td {
-            border: 1px solid black;
-            padding: 5px;
-            text-align: center;
+        div {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            background-color: #e9e9e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        input[type="submit"], button[type="button"] {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            margin: 10px 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover, button[type="button"]:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            text-decoration: none;
         }
     </style>
 </head>
 
 <body>
     <div>
-        <h1>選択されたタスクの削除</h1>
+        <h1>選択されたタスクの完了</h1>
         <form action="{% url 'delete' %}" method="POST">{% csrf_token %}
             {% for task in tasks %}
-              <p>{{ task.title }}</p>
-              <!-- 各タスクのIDを隠しフィールドとしてフォームに追加 -->
-              <input type="hidden" name="task_ids" value="{{ task.id }}">
+            <p>{{ task.title }}</p>
+            <input type="hidden" name="task_ids" value="{{ task.id }}">
             {% endfor %}
-            <!-- 削除の確認用の隠しフィールド -->
             <input type="hidden" name="confirm" value="yes">
-            <input type="submit" value="選択したタスクを削除">
+            <input type="submit" value="完了">
             <a href="{% url 'todo_home' %}"><button type="button">ToDoリストに戻る</button></a>
         </form>
     </div>
-
-    </body>
-
+</body>

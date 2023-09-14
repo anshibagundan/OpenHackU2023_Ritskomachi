@@ -131,7 +131,7 @@
     </div>
 
     <div class="center">
-        <h3 class="yellow-underline increase-font">今日やること</h3>
+        <h3 class="yellow-underline increase-font">やること全て</h3>
 
     </div>
     <form method="post" action="{% url 'delete' %}">
@@ -163,7 +163,7 @@
                 {% endfor %}
             </table>
         </div>
-        <button type="submit" id="deleteSelectedButton" class="button-styled" style="display: none;">選択したタスクを削除</button>
+        <button type="submit" id="deleteSelectedButton" class="button-styled" style="display: none;">完了</button>
     </form>
 
     <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>

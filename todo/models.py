@@ -3,17 +3,19 @@ from django.db import models
 from django.contrib.auth.models import User
 
 COLOR_CHOICES = [
-    ('lavender', 'むらさき'),
-    ('honeydew', 'きみどり'),
-    ('floralwhite', 'しろ'),
-    ('papayawhite', 'オレンジ'),
-    ('lavenderblush', 'ピンク'),
-    ('mistyrose', 'ピンクオレンジ'),
-    ('lightcyan', 'あお'),
-    ('whitesmoke', 'グレー'),
-    ('lightpink','あか'),
-    ('palegreen', 'みどり'),
-
+    ('red','red'),
+    ('white','white'),
+    ('green','green'),
+    ('blue','blue'),
+    ('purple','purple'),
+    ('orange','orange'),
+    ('pink','pink'),
+    ('cyan','cyan'),
+    ('brown','brown'),
+    ('gray','gray'),
+    ('lime','lime'),
+    ('violet','violet'),
+    ('indigo','indigo')
     # ... 他の色を追加
 ]
 

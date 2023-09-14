@@ -1,12 +1,50 @@
 {% extends "base.html" %}
 
+{% block head_extra %}
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body {
+        background-color: #f4f4f6;
+        font-family: 'Arial', sans-serif;
+    }
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .btn-primary, .btn-outline-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #fff;
+    }
+    .btn-outline-primary {
+        color: #007bff;
+    }
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-  <h2>Login</h2>
-  <p><button type="submit"><a href="{% url 'signup' %}">サインアップ</a></button></p>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-5">
+                <h2 class="text-center mb-4">Login</h2>
+                <form method="post" class="mb-4">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </div>
+                </form>
+                <div class="text-center">
+                    <p class="mb-2">アカウントを持っていませんか？</p>
+                    <a href="{% url 'signup' %}" class="btn btn-outline-primary btn-block">サインアップ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
