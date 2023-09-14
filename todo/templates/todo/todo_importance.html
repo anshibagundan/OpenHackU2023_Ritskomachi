@@ -16,14 +16,10 @@
     <link rel="stylesheet" href="{% static 'underline.css' %}">
     <link rel="stylesheet" href="{% static 'addbutton.css' %}">
     <link rel="stylesheet" href="{% static 'list.css' %}">
-    {% for todo in todos %}
+
     <style>
         .center {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+            text-align: center;
         }
 
         .title-size {
@@ -33,6 +29,7 @@
         .subtitle-size {
             font-size: 150%;
         }
+
 
         .yellow-underline {
             text-decoration: underline;
@@ -79,38 +76,13 @@
             padding: 10px;
             text-align: center;
         }
-        {% if todo.tag.id == 1 %}
-        .tag1 {
-            background-color: {{ todo.tag.color}};
-            border:2px solid {{ todo.tag.color}};
+        {% for todo in todos %}
+        .tag{{todo.tag.id}} {
+            background-color: {{ todo.tag.color }};
+            border: 2px solid {{ todo.tag.color }};
         }
-        {%endif%}
-        {% if todo.tag.id == 2 %}
-        .tag2 {
-            background-color: {{ todo.tag.color}};
-            border:2px solid {{ todo.tag.color}};
-        }
-        {%endif%}
-        {% if todo.tag.id == 3 %}
-        .tag3 {
-            background-color: {{ todo.tag.color}};
-            border:2px solid {{ todo.tag.color}};
-        }
-        {%endif%}
-        {% if todo.tag.id == 4 %}
-        .tag4 {
-            background-color: {{ todo.tag.color}};
-            border:2px solid {{ todo.tag.color}};
-        }
-        {%endif%}
-        {% if todo.tag.id == 5 %}
-        .tag5 {
-            background-color: {{ todo.tag.color}};
-            border:2px solid {{ todo.tag.color}};
-        }
-        {%endif%}
-    </style>
     {% endfor %}
+    </style>
 
 </head>
 
@@ -153,9 +125,8 @@
 
     <div class="center">
         <h1 id="tit" class="yellow-underline increase-font">Todoリスト一覧</h1>
-        <h2 class="increase-font">重さと日付を考慮</h2>
-        <a href="{% url 'todo_importance' %}">
-            <button class="button-styled increase-font">重さ考慮</button>
+        <a href="{% url 'list' %}">
+            <button class="button-styled increase-font">重さと日付を考慮</button>
         </a>
     </div>
 
@@ -163,8 +134,6 @@
         <h3 class="yellow-underline increase-font">今日やること</h3>
 
     </div>
-
-
     <form method="post" action="{% url 'delete' %}">
         {% csrf_token %}
         <div>
