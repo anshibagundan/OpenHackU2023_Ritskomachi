@@ -78,8 +78,8 @@
         }
         {% for todo in todos %}
         .tag{{todo.tag.id}} {
-            background-color: {{ todo.tag.color }};
-            border: 2px solid {{ todo.tag.color }};
+            background-color: {{ todo.tag.color_id.name }};
+            border: 2px solid {{ todo.tag.color_id.name }};
         }
     {% endfor %}
     </style>
@@ -178,7 +178,7 @@
         <button type="submit" id="deleteSelectedButton" class="button-styled" style="display: none;">完了</button>
     </form>
 
-    <p><a href="{% url 'todo_addtask' %}"><button id="add-button">+</button></a></p>
+    <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
     <script src="{% static 'script.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

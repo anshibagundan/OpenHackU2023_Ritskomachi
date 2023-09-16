@@ -1,5 +1,5 @@
 from django import forms
-from .models import Todo, Tag
+from .models import Todo,Tag
 
 class TodoForm(forms.ModelForm):
     class Meta:
@@ -14,3 +14,10 @@ class TodoForm(forms.ModelForm):
             'tag': forms.Select(attrs={'class': 'form-control'}),
             'importance': forms.Select(choices=Todo.IMPORTANCE_CHOICES, attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(TodoForm, self).__init__(*args, **kwargs)
+        if user:
+            # 前提として、Tagモデルにuserフィールドが存在すると仮定します。
+            self.fields['tag'].queryset = Tag.objects.filter(user=user)

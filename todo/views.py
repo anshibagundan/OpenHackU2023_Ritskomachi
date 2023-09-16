@@ -17,7 +17,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.auth import authenticate, login
 
 
 
@@ -29,6 +29,22 @@ class SignupView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'registration/usercreation_form.html'
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # ログインに成功した場合のリダイレクト先
+            return redirect('list')
+        else:
+            # 認証失敗の場合のエラーメッセージ
+            context = {'error': 'ユーザー名またはパスワードが違います'}
+            return render(request, 'todo/login.html', context)
+    return render(request, 'todo/login.html')
 
 
 @login_required
@@ -61,9 +77,14 @@ class TaskListView(LoginRequiredMixin, ListView, mixins.MonthCalendarMixin):
 
 class TodoUpdate(LoginRequiredMixin,UpdateView):
     model = Todo
-    fields = "__all__"
+    form_class = TodoForm
     success_url = '../..'
 
+
+    def get_form_kwargs(self):
+        kwargs = super(TodoUpdate, self).get_form_kwargs()
+        kwargs['user'] = self.request.user  # ログインユーザをキーワード引数として追加
+        return kwargs
     def form_valid(self, form):
         print("form_valid method called")
 
@@ -87,7 +108,8 @@ class TodoUpdate(LoginRequiredMixin,UpdateView):
 @login_required
 def create_todo(request):
     if request.method == 'POST':
-        form = TodoForm(request.POST)
+        form = TodoForm(request.POST, user=request.user)
+
         if form.is_valid():
             todo = form.save(commit=False)
             todo.user = request.user
@@ -106,7 +128,8 @@ def create_todo(request):
 
             return redirect('list')
     else:
-        form = TodoForm()
+        form = TodoForm(user=request.user)
+
         print(form.errors)
     return render(request, 'todo/todo_form.html', {'form': form})
 

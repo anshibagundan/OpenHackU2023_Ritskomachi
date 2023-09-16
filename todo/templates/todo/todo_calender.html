@@ -361,7 +361,7 @@
 
                                     <span id="task-span">
                                         <span id="task-span-box">
-                                            <input type="checkbox" name="task_ids" value="{{ task.id }}" />
+                                            <input type="checkbox" class="checkbox" name="task_ids" value="{{ task.id }}" />
                                         </span>
                                         <span id="task-span-tit">
                                             {{task.title}}
@@ -461,32 +461,23 @@
     <script>
 
 
-        // チェックボックス要素の取得
-        const checkboxes = document.querySelectorAll('.checkbox');
-
-        // 各チェックボックスにクリックイベントリスナーを追加
-        checkboxes.forEach((checkbox) => {
-            checkbox.addEventListener('click', () => {
-                checkbox.classList.toggle('checked');
-                const isChecked = checkbox.classList.contains('checked');
-                checkbox.setAttribute('data-checked', isChecked ? 'true' : 'false');
-            });
-        });
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             let checkboxes = document.querySelectorAll('input[type="checkbox"][name="task_ids"]');
             let deleteButton = document.getElementById('deleteSelectedButton');
 
-            checkboxes.forEach(function (checkbox) {
-                checkbox.addEventListener('change', function () {
-                    // チェックされているチェックボックスの数を数える
+            checkboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    // この関数内でcheckedCountを計算
                     let checkedCount = 0;
-                    checkboxes.forEach(function (c) {
+                    checkboxes.forEach(function(c) {
                         if (c.checked) {
                             checkedCount++;
                         }
                     });
 
-                    // チェックが一つ以上あればボタンを表示、なければ非表示
+                    // デバッグのためのログ:
+                    console.log('Checked count:', checkedCount);
+
                     if (checkedCount > 0) {
                         deleteButton.style.display = 'block';
                     } else {
@@ -495,6 +486,19 @@
                 });
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let checkboxes = document.querySelectorAll('input[type="checkbox"][name="task_ids"]');
+            let deleteButton = document.getElementById('deleteSelectedButton');
+
+            checkboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    // ...
+                    console.log('Checked count:', checkedCount);  // Debug
+                });
+            });
+        });
+
     </script>
 
 

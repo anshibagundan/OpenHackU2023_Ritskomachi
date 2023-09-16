@@ -21,7 +21,7 @@ urlpatterns = [
     path('todo_calender/<int:year>/<int:month>/',TodoCalender.as_view(), name='calender'),
     path('todo_addtask/', views.create_todo, name='create_todo'),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    path('login/', views.login_view, name='login'),
     path('accounts/signup/', views.SignupView.as_view(), name='signup'),
     path('logout/', logout_view, name='logout'),
 
