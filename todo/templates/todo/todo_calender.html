@@ -13,6 +13,13 @@
     <meta name="theme-color" content="#fafafa">
 
     <style>
+        {% for todo in todos %}
+        #task-span{{todo.tag.id}}{
+            background-color: {{ todo.tag.color_id.name }};
+            border: 2px solid {{ todo.tag.color_id.neme }};
+        }
+        {% endfor %}
+
         @font-face {
             font-family: 'MyFont';
             src: url(Mameron.otf);
@@ -343,7 +350,7 @@
 
                             {% for task in tasks %}
                             {% if day.day|stringformat:"02d" == task.deadline|date:"d" and day.month|stringformat:"02d" == task.deadline|date:"m" %}
-                            <br>task:〇
+                            <br> {{ task.name }}
                             {% else %}
                             <br>{{ day | date:"　　" }}
                             {% endif %}

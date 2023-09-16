@@ -52,16 +52,6 @@
             align-items: center;
         }
 
-        #wwoption-button img {
-            display: flex;
-            width: 7%;
-            /* 幅を30pxに設定 */
-            height: 7%;
-            /* 高さも30pxに設定 */
-            margin-left: auto;
-            /* メニューバーからの間隔を設定 */
-        }
-
 
         body {
             font-family: 'Mameron';
@@ -274,9 +264,6 @@
 <body>
     <td><button id="toggle-button">メニューを表示</button></td>
     <nav id="wwmenu-bar">
-        <nav id="option-button">
-            <a href="{% url 'todo_home' %}"><img src="{% static 'option.png' %}" alt="option"></a>
-        </nav>
         <ul>
             <li class="textWrapper">
                 <span class="backgroundImage">
@@ -307,6 +294,7 @@
             </li>
         </ul>
     </nav>
+
     <h1>カテゴリー管理</h1>
     <div id="tag-container">
         {% for tag in tags %}
