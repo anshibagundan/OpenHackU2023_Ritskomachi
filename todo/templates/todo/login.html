@@ -83,7 +83,7 @@
                 <label for="password">パスワード：</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <div id="newacount"><small>アカウントをまだ作ってない方は<a href="./newacount.html">こちら</a></small></div>
+            <div id="newacount"><small>アカウントをまだ作ってない方は<a href="{% url 'signup' %}">こちら</a></small></div>
 
             <button type="submit" class="login-button">ログイン</button>
         </form>
