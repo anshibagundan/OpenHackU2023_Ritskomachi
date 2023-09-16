@@ -262,38 +262,8 @@
 </head>
 
 <body>
-    <td><button id="toggle-button">メニューを表示</button></td>
-    <nav id="wwmenu-bar">
-        <ul>
-            <li class="textWrapper">
-                <span class="backgroundImage">
-                    <a href="{% url 'list' %}">ホーム</a>
-                </span>
-            </li>
-            <li class="textWrapper">
-                <span class="backgroundImage">
-                    <a href="{% url 'todo_home' %}">今日のTodo</a>
-                </span>
-            </li>
-            <li class="textWrapper">
-                <span class="backgroundImage">
-                    {% now "Y" as current_year %}
-                    {% now "m" as current_month %}
-                    <a href="{% url 'calender' year=current_year month=current_month %}">カレンダー</a>
-                </span>
-            </li>
-            <li class="textWrapper">
-                <span class="backgroundImage">
-                    <a href="{% url 'category' %}">カテゴリー管理</a>
-                </span>
-            </li>
-            <li class="textWrapper">
-                <span class="backgroundImage">
-                    <a href="{% url 'logout' %}">ログアウト</a>
-                </span>
-            </li>
-        </ul>
-    </nav>
+    <td><button id="toggle-button"><a href "{% url 'list' %}">ホーム</a></button></td>
+
 
     <h1>カテゴリー管理</h1>
     <div id="tag-container">
