@@ -1,34 +1,39 @@
 from django.db import models
-
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 COLOR_CHOICES = [
-    ('red','red'),
-    ('white','white'),
-    ('green','green'),
-    ('blue','blue'),
-    ('purple','purple'),
+    ('orangered','red'),
     ('orange','orange'),
+    ('khaki','yellow'),
+    ('palegreen','lightgreen'),
+    ('limegreen','green'),
+    ('mediumspringgreen','emegreen'),
+    ('deepskyblue','lightblue'),
+    ('royalblue','blue'),
+    ('darkviolet','purple'),
+    ('plum','purplepink'),
     ('pink','pink'),
-    ('cyan','cyan'),
-    ('brown','brown'),
-    ('gray','gray'),
-    ('lime','lime'),
-    ('violet','violet'),
-    ('indigo','indigo')
+    ('deeppink','deeppink'),
     # ... 他の色を追加
 ]
+class Color(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=17, blank=True,choices=COLOR_CHOICES)
 
 class Tag(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=10, blank=True)
-    color = models.CharField(max_length=13, choices=COLOR_CHOICES)
+    name = models.CharField(max_length=30, blank=True)
+    color_id = models.ForeignKey(Color, null=True, on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ['user', 'color']
+        unique_together = ['user', 'color_id']
 
     def __str__(self):
         return self.name
+
 
 class Todo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

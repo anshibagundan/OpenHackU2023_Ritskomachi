@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, UpdateView
-from .models import Todo, TodoDay, Tag
-from .forms import TagForm,TodoForm
+from .models import Todo, TodoDay,Tag,Color
+from .forms import TodoForm
 from django.shortcuts import get_object_or_404
 from django.views import View
 from . import mixins
@@ -12,9 +12,14 @@ from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import CreateView
 from django.contrib.auth import logout
-from django.http import JsonResponse
+from django.forms import ModelForm
+from django.core.exceptions import ObjectDoesNotExist
 import json
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+
+
+
 
 
 def title_page(request):
@@ -54,34 +59,56 @@ class TaskListView(LoginRequiredMixin, ListView, mixins.MonthCalendarMixin):
         return Todo.objects.filter(user=self.request.user)
 
 
-class TodoUpdate(LoginRequiredMixin, UpdateView):
+class TodoUpdate(LoginRequiredMixin,UpdateView):
     model = Todo
-    template_name = 'todo/todo_form.html'
-    form_class = TodoForm  # この行を追加
-    success_url = reverse_lazy('list')
+    fields = "__all__"
+    success_url = '../..'
 
     def form_valid(self, form):
+        print("form_valid method called")
+
         response = super().form_valid(form)
+
+
         todo_day = get_object_or_404(TodoDay, todo=self.object)
+        print(f"Found TodoDay entry: {todo_day.id}")
+
 
         todo_day.title = self.object.title
         todo_day.description = self.object.description
         todo_day.deadline = self.object.deadline
         todo_day.importance = self.object.importance
-        todo_day.tag = self.object.tag
+        print(f"Updating TodoDay entry: {todo_day.id} with importance: {todo_day.importance}")
 
         todo_day.save()
 
         return response
 
-    def get_form_kwargs(self):
-        kwargs = super(TodoUpdate, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
+@login_required
+def create_todo(request):
+    if request.method == 'POST':
+        form = TodoForm(request.POST)
+        if form.is_valid():
+            todo = form.save(commit=False)
+            todo.user = request.user
+            todo.save()
 
+            tododay = TodoDay(
+                todo=todo,
+                tag=todo.tag,
+                title=todo.title,
+                description=todo.description,
+                deadline=todo.deadline,
+                importance=todo.importance,
+                user=request.user  # ここを修正
+            )
+            tododay.save()  # この行を追加
 
-
-
+            return redirect('list')
+    else:
+        form = TodoForm()
+        print(form.errors)
+    return render(request, 'todo/todo_form.html', {'form': form})
 
 
 class BulkDeleteTasks(LoginRequiredMixin, View):
@@ -116,34 +143,6 @@ class TodoCalender(LoginRequiredMixin, ListView, mixins.MonthCalendarMixin):
         return Todo.objects.filter(user=self.request.user)
 
 
-
-
-
-@login_required
-def create_todo(request):
-    if request.method == 'POST':
-        form = TodoForm(request.POST)
-
-        if form.is_valid():
-            todo = form.save(commit=False)
-            todo.user = request.user
-            todo.save()
-
-            TodoDay.objects.create(
-                todo=todo,
-                user=request.user,
-                title=todo.title,
-                description=todo.description,
-                deadline=todo.deadline,
-                importance=todo.importance,
-                tag=todo.tag
-            )
-            return redirect('list')
-    else:
-        form = TodoForm(user=request.user)
-
-    return render(request, 'todo/todo_form.html', {'form': form})
-
 @login_required
 def todo_list(request):
     today = date.today()
@@ -153,11 +152,12 @@ def todo_list(request):
     def custom_sort(todo):
         days_difference = (todo.deadline - today).days
         if days_difference < 0:
-            importance_mapping = {1: 5, 2: 4, 3: 3, 4: 2, 5: 1}
-            importance_value = importance_mapping.get(todo.importance, todo.importance)
+            return todo.importance
+        elif days_difference == 0:
+            return 6 * todo.importance
         else:
-            importance_value = todo.importance
-        return importance_value * days_difference
+            days_difference += 6
+            return todo.importance * days_difference
 
     sorted_todos = sorted(todos, key=custom_sort)
 
@@ -193,107 +193,99 @@ def todo_importance(request):
     }
     return render(request, 'todo/todo_importance.html', context)
 
-
-
-class TodoCategory(LoginRequiredMixin, ListView):
-    model = Todo
-    template_name = 'todo/todo_category.html'
-    context_object_name = "tasks"
-
-    def get_queryset(self):
-        return Todo.objects.filter(user=self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['tags'] = Tag.objects.filter(user=self.request.user)
-        context['form'] = TagForm()  # タグのフォームもコンテキストに追加
-        return context
-
-    def post(self, request, *args, **kwargs):
-        form = TagForm(request.POST)
-        if form.is_valid():
-            # このユーザの中で同じ色のタグが存在しないかチェック
-            if not Tag.objects.filter(color=form.cleaned_data['color'], user=request.user).exists():
-                tag = form.save(commit=False)
-                tag.user = request.user
-                tag.save()
-                return JsonResponse({"success": True, "message": "Tag created successfully."})
-            else:
-                form.add_error('color', 'この色は既に使用されています。')
-                return JsonResponse({"success": False, "message": "この色は既に使用されています。"})
-
-        # エラーがあれば、それを返す
-        errors = form.errors.as_json()
-        return JsonResponse({"success": False, "errors": errors})
+class TagForm(ModelForm):
+    class Meta:
+        model = Tag
+        fields = ['name', 'color_id']
 
 @login_required
-def add_tag(request):
+def Todocategory(request):
+    if request.method == 'POST':
+        tag_name = request.POST.get('tag-name')
+        color_id = request.POST.get('color_id')
 
+        # データベースに新しいTagを保存
+        new_tag = Tag(
+            name=tag_name,
+            color_id_id=color_id,
+            is_active=False,
+            user=request.user)
 
-    if request.method == "POST":
-        # リクエストから必要なデータを取得
-        data = json.loads(request.body.decode('utf-8'))
-        tagName = data.get('tag_name')
-        color = data.get('color')
+        new_tag.save()
 
-        if not tagName:
-            return JsonResponse({"success": False, "message": "Tag name is required."})
+        return redirect('category')  # タグを保存した後、同じページにリダイレクト
 
-
-        # タグをデータベースに追加
-        try:
-
-            # ユーザーに紐づく新しいタグを作成
-            tag = Tag.objects.create(
-                user=request.user,
-                name=tagName,  # タグ名を設定
-                color=color
-            )
-
-
-            # タグが正常に作成された場合のレスポンス
-            return JsonResponse({"success": True, "message": "Tag created successfully."})
-        except Exception as e:
-            return JsonResponse({"success": False, "message": f"Error {type(e).__name__}: {str(e)}"})
-
-
-    # POSTリクエストでない場合のエラーレスポンス
-    return JsonResponse({"success": False, "message": "Invalid request method."})
-
-
-
+    colors = Color.objects.filter(user_id=request.user.id)
+    tags = Tag.objects.filter(user=request.user.id)
+    context = {
+        'colors': colors,
+        'tags': tags
+    }
+    return render(request, 'todo/todo_category.html', context)
 @csrf_exempt
 @login_required
-def update_tag(request):
+def update_tag_name(request):
     if request.method == "POST":
-        data = json.loads(request.body.decode('utf-8'))
+        data = json.loads(request.body)
         tag_id = data.get('tag_id')
-        tag_name = data.get('tag_name')
-        color = data.get('color')
+        new_name = data.get('new_name')
 
         try:
-            tag = Tag.objects.get(pk=tag_id, user=request.user)  # ユーザーとタグIDでタグを取得
-            tag.name = tag_name
-            tag.color = color
+            tag = Tag.objects.get(pk=tag_id, user=request.user.id)
+            tag.name = new_name
             tag.save()
+            return JsonResponse({"success": True, "message": "タグの名前が更新されました。"})
+        except ObjectDoesNotExist:
+            # 指定されたタグが存在しない場合のエラーハンドリング
+            return JsonResponse({"success": False, "error": "指定されたタグが存在しません。"})
+@csrf_exempt
+@login_required
+def update_tag_color(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        tag_id = data.get('tag_id')
+        color_id = data.get('color_id')
 
-            return JsonResponse({"success": True, "message": "Tag updated successfully."})
-        except Tag.DoesNotExist:
-            return JsonResponse({"success": False, "message": "Tag not found."})
-        except Exception as e:
-            return JsonResponse({"success": False, "message": f"Error {type(e).__name__}: {str(e)}"})
 
-    return JsonResponse({"success": False, "message": "Invalid request method."})
+        try:
+            tag = Tag.objects.get(pk=tag_id, user=request.user)
+            color_instance = Color.objects.get(pk=color_id)
+            tag.color_id = color_instance
+            tag.save()
+            color = Color.objects.get(pk=color_id)
+            return JsonResponse({"success": True, "message": "タグの色が更新されました。",'color_name': color.name})
+        except ObjectDoesNotExist:
+            return JsonResponse({"success": False, "message": "指定されたタグが存在しません。"})
 
 @csrf_exempt
 @login_required
-def delete_tags(request):
+def toggle_tag_activity(request):
     if request.method == "POST":
-        try:
-            tag_ids = request.POST.getlist('tag_ids[]')
-            Tag.objects.filter(id__in=tag_ids).delete()
-            return JsonResponse({"status": "success"})
-        except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)})
+        tag_id = request.POST.get('tag_id')
+        is_active = request.POST.get('is_active') == 'true'
 
-    return JsonResponse({"status": "error", "message": "Invalid request method"})
+        tag = Tag.objects.get(pk=tag_id, user=request.user)
+        tag.is_active = not tag.is_active
+        tag.save()
+
+        return JsonResponse({"success": True, "message": "タグの活動状態が変更されました。"})
+
+@csrf_exempt
+@login_required
+def delete_todo_and_tag(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        tag_id = data.get("tag_id")
+
+        try:
+            TodoDay.objects.filter(tag=tag_id).delete()
+            # 該当のtag_idを持つタスクをすべて削除
+            Todo.objects.filter(tag=tag_id).delete()
+
+            # タグ自体を削除
+            Tag.objects.get(pk=tag_id).delete()
+
+            return JsonResponse({"success": True})
+
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})

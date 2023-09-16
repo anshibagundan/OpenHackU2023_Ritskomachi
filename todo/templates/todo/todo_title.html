@@ -1,12 +1,117 @@
-<!-- title_page.html -->
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Welcome to Our Site</title>
-</head>
-<body>
-    <h1>Welcome to Our Site</h1>
+<html lang="en">
 
-    <p><a href="{% url 'login' %}">ログイン</a></p>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <style>
+        /* CSSコード */
+        .bg {
+            position: block;
+            height: 40%;
+            margin-bottom: 40%;
+        }
+
+        .fadein {
+            position: absolute;
+            top: 25%;
+            left: 30%;
+            color: rgb(255, 255, 255);
+            opacity: 0;
+            animation-name: fadein;
+            animation-duration: 5s;
+            animation-timing-function: ease-out;
+            animation-fill-mode: forwards;
+            width: 40%;
+            height: auto;
+        }
+
+        @keyframes fadein {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+                transform: scale(1.5);
+            }
+        }
+
+        /* ログインボタンスタイル */
+        .login-container {
+            text-align: center;
+            /* ボタンを中央に配置 */
+        }
+
+        .btn{
+            width: 15%;
+            height: 20%;
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.5;
+            position: relative;
+            display: inline-block;
+            padding: 1rem 4rem;
+            cursor: pointer;
+            text-align: center;
+            vertical-align: middle;
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            border-radius: 0.5rem;
+            display: none; /* 最初は非表示 */
+            margin: 0 auto;
+        }
+
+
+        a.btn-border {
+            border: 2px solid #000;
+            border-radius: 0;
+            background: #fff;
+            color:#333;
+        }
+
+        a.btn-border:hover {
+            color: #fff;
+            background: #333;
+        }
+
+        #footer {
+            position: absolute;
+            left:48%;
+            bottom: 1%;
+            font-size: 0.5rem;
+            padding: 10px 0;
+        }
+
+    </style>
+</head>
+
+<body>
+    {% load static %}
+    <div class="bg">
+        <img src="{% static 'logo2.png'%}" alt="Logo" class="fadein">
+    </div>
+    <div class="login-container">
+        <a href="{% url 'login' %}" class="btn btn-border">ログイン</a>
+    </div>
+
+    <script>
+        // アニメーションが完了したらログインボタンを表示
+        var logo = document.querySelector('.fadein');
+        var loginButton = document.querySelector('.btn');
+
+        logo.addEventListener('animationend', function () {
+            loginButton.style.display = 'block';
+        });
+    </script>
+
+    <footer id="footer">
+        <p>&copy; 2023 Rits小町</p>
+    </footer>
 </body>
+
 </html>

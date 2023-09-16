@@ -155,7 +155,19 @@
                     </td>
                     <td>{{ todo.title }}</td>
                     <td>{{ todo.deadline }}</td>
-                    <td>{{ todo.importance }}</td>
+                    <td>
+                        {% if todo.importance == 1 %}
+                        すごい大事
+                        {% elif todo.importance == 2 %}
+                        大事
+                        {% elif todo.importance == 3 %}
+                        普通
+                        {% elif todo.importance == 4 %}
+                        大事じゃない
+                        {% elif todo.importance == 5 %}
+                        すごい大事じゃない
+                        {% endif %}
+                    </td>
                     <td>{{ todo.tag }}</td>
                     <td><a href="{% url 'detail' todo.pk %}">詳細</a></td>
                     <td><a href="{% url 'update' todo.pk %}">編集</a></td>
@@ -166,7 +178,7 @@
         <button type="submit" id="deleteSelectedButton" class="button-styled" style="display: none;">完了</button>
     </form>
 
-    <p><a href="{% url 'create_todo' %}"><button id="add-button">+</button></a></p>
+    <p><a href="{% url 'todo_addtask' %}"><button id="add-button">+</button></a></p>
     <script src="{% static 'script.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
