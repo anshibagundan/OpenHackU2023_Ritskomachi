@@ -13,12 +13,7 @@
     <meta name="theme-color" content="#fafafa">
 
     <style>
-        {% for todo in todos %}
-        #task-span{{todo.tag.id}}{
-            background-color: {{ todo.tag.color_id.name }};
-            border: 2px solid {{ todo.tag.color_id.neme }};
-        }
-        {% endfor %}
+
 
         @font-face {
             font-family: 'MyFont';
@@ -205,12 +200,12 @@
         }
 
         #task-span{
-            background-color: rgb(130, 228, 237);
             display:flex;
             border: 1px solid black;
             width: 100%;
             height: 50px;
         }
+
 
         #task-span-box{
             display:flex;
@@ -231,6 +226,7 @@
             height: 100%;
             width: 35%;
         }
+
         #task-span-description{
             display:flex;
             padding: auto;
@@ -350,7 +346,7 @@
 
                             {% for task in tasks %}
                             {% if day.day|stringformat:"02d" == task.deadline|date:"d" and day.month|stringformat:"02d" == task.deadline|date:"m" %}
-                            <br> {{ task.name }}
+                            <br> タスクあるよー
                             {% else %}
                             <br>{{ day | date:"　　" }}
                             {% endif %}
@@ -380,7 +376,7 @@
                                     <br>
                                     {% endif %}
                                     {% endfor %}
-                                    <button type="submit" id="deleteSelectedButton" style="display: none;">選択したタスクを削除</button>
+                                    <button type="submit" id="deleteSelectedButton" style="display: none;">選択したタスクを完了</button>
                                 </form>
                             </nav>
 
