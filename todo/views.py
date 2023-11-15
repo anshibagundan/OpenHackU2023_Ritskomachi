@@ -129,8 +129,6 @@ def create_todo(request):
             return redirect('list')
     else:
         form = TodoForm(user=request.user)
-
-        print(form.errors)
     return render(request, 'todo/todo_form.html', {'form': form})
 
 
